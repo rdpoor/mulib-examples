@@ -1,7 +1,7 @@
 /**
  * MIT License
  *
- * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
+ * Copyright (c) 2020 R. D. Poor <rdpoor@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,23 +23,32 @@
  */
 
 /**
- * @file template.h
+ * @file blink_4.h
  *
- * @brief Short description of what this module does
+ * @brief Repeatedly blink an entire phrase on an LED using Morse code.
+ *
+ * This example shows how mulitple tasks can be nested, using the on_callback
+ * pattern to create complex behavior from simple tasks.
+ *
+ * In this case, the blink_4 task passes an AsCII string to morse_str, which
+ * feeds one letter at a time to morse_blinker.  As morse_blinker completes each
+ * letter, it invokes its callback function to fetch the next letter from
+ * morse_str.  And when morse_str completes, it calls back to blink_4, which
+ * restarts the entire process.
  */
 
-#ifndef _BLINK_1_H_
-#define _BLINK_1_H_
+ #ifndef _BLINK_4_H_
+ #define _BLINK_4_H_
 
-// *****************************************************************************
-// Includes
+ // *****************************************************************************
+ // Includes
 
-// *****************************************************************************
-// C++ Compatibility
+ // *****************************************************************************
+ // C++ Compatibility
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
 
 // *****************************************************************************
 // Public types and definitions
@@ -48,20 +57,17 @@ extern "C" {
 // Public declarations
 
 /**
- * @brief Initialize the blink_1 application.  Called once at startup.
+ * @brief Initialize the blink_4 application.  Called once at startup.
  */
-void blink_1_init(void);
-  
-/**
- * @brief Run the blink_1 application.  Called frequently from main().
- */
-void blink_1_step(void);
+void blink_4_init(void);
 
-// *****************************************************************************
-// End of file
+/**
+ * @brief Run the blink_4 application.  Called frequently from main().
+ */
+void blink_4_step(void);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* #ifndef _BLINK_1_H_ */
+#endif // _BLINK_4_H_

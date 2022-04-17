@@ -49,7 +49,7 @@ typedef struct {
 // Allocate a mu_task object for blink_1
 static mu_task_t s_blink_1_task;
 
-// Allocate the blink_1 context 
+// Allocate the blink_1 context
 static blink_1_ctx_t s_blink_1_ctx;
 
 // *****************************************************************************
@@ -63,19 +63,18 @@ static void blink_1_fn(void *ctx, void *arg);
 void blink_1_init(void) {
   mu_sched_init();      // initialize the scheduler
   mu_platform_init();   // perform any platform-specific initializations
-  
-  // initialize s_blink_task to associate its function (blink_1_fn) with 
+
+  // initialize s_blink_task to associate its function (blink_1_fn) with
   // its context (s_blink_1_ctx)
-  mu_task_init(&s_blink_task, blink_1_fn, &s_blink_1_ctx, "Blink 1");
+  mu_task_init(&s_blink_1_task, blink_1_fn, &s_blink_1_ctx, "Blink 1");
 
   // Initialize the context's initial state
   s_blink_1_ctx.blink_interval = mu_time_rel_to_ms(BLINK_INTERVAL_MS);
-  s_blink_1_ctx.led_is_on = false;
 
   // Make sure the LED is initially off
   bsp_led_off();
 
-  // Make the first call to the scheduler to start things off.  blink_1_fn() 
+  // Make the first call to the scheduler to start things off.  blink_1_fn()
   // will reschedule itself thereafter.
   mu_sched_task_now(&s_blink_1_task);
 }
@@ -90,7 +89,7 @@ void blink_1_step(void) {
 // *****************************************************************************
 // Private (static) code
 
-// blink_1_fn() is invoked whenever blink_1's task is triggered.  It is called 
+// blink_1_fn() is invoked whenever blink_1's task is triggered.  It is called
 // with two arguments: blink_1's state ('context') and a user-supplied argument
 // (currently unused).
 //
