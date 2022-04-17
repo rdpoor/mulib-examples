@@ -27,21 +27,29 @@
 
 #include "blink_1.h"
 
+#include "bsp.h"          // define led_off(), led_toggle()
+#include "mu_platform.h"  // define mu_time_*
+#include "mu_sched.h"     // define mu_sched_*
+#include "mu_task.h"      // define mu_task_*
+
 // *****************************************************************************
 // Private types and definitions
 
 // Define the blink interval in milliseconds
 #define BLINK_INTERVAL_MS 1000
 
+// Define a structure to hold the blink_1 context.
 typedef struct {
   mu_time_rel_t blink_interval;
-  bool led_is_on;
 } blink_1_ctx_t;
 
 // *****************************************************************************
 // Private (static) storage
 
+// Allocate a mu_task object for blink_1
 static mu_task_t s_blink_1_task;
+
+// Allocate the blink_1 context 
 static blink_1_ctx_t s_blink_1_ctx;
 
 // *****************************************************************************
