@@ -13,13 +13,7 @@
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>
-                <sourceRootElem>../src</sourceRootElem>
-                <sourceRootElem>../../../../mulib</sourceRootElem>
-                <sourceRootElem>../../../../platforms/samd21_xpro</sourceRootElem>
-                <sourceRootElem>../../../../blink_1</sourceRootElem>
-                <sourceRootElem>../../../../blink_2</sourceRootElem>
-                <sourceRootElem>../../../../blink_3</sourceRootElem>
-                <sourceRootElem>../../../../blink_4</sourceRootElem>
+                <sourceRootElem>../../../..</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
