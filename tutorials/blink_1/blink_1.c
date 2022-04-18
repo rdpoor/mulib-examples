@@ -27,10 +27,10 @@
 
 #include "blink_1.h"
 
-#include "bsp.h"          // define led_off(), led_toggle()
-#include "mu_platform.h"  // define mu_time_*
-#include "mu_sched.h"     // define mu_sched_*
-#include "mu_task.h"      // define mu_task_*
+#include "mu_sched.h"      // define mu_sched_*
+#include "mu_task.h"       // define mu_task_*
+#include "mu_time.h"       // define mu_time_*
+#include "tutorials_bsp.h" // define led_off(), led_toggle()
 
 // *****************************************************************************
 // Private types and definitions
@@ -62,21 +62,21 @@ static void blink_1_fn(void *ctx, void *arg);
 
 void blink_1_init(void) {
   mu_sched_init();      // initialize the scheduler
-  mu_platform_init();   // perform any platform-specific initializations
+  mu_time_init();       // perform platform-specific initializations
 
   // initialize s_blink_task to associate its function (blink_1_fn) with
   // its context (s_blink_1_ctx)
   mu_task_init(&s_blink_1_task, blink_1_fn, &s_blink_1_ctx, "Blink 1");
 
   // Initialize the context's initial state
-  s_blink_1_ctx.blink_interval = mu_time_rel_to_ms(BLINK_INTERVAL_MS);
+  s_blink_1_ctx.blink_interval = mu_time_ms_to_rel(BLINK_INTERVAL_MS);
 
   // Make sure the LED is initially off
-  bsp_led_off();
+  tutorials_bsp_led_off();
 
   // Make the first call to the scheduler to start things off.  blink_1_fn()
   // will reschedule itself thereafter.
-  mu_sched_task_now(&s_blink_1_task);
+  mu_sched_now(&s_blink_1_task);
 }
 
 
@@ -101,6 +101,6 @@ static void blink_1_fn(void *ctx, void *arg) {
   (void)arg;                                  // unused
 
   // Toggle LED and reschedule to run in BLINK_INTERVAL_MS in the future
-  bsp_led_toggle();
-  mu_sched_reschedule_in(self->blink_interval);
+  tutorials_bsp_led_toggle();
+  mu_sched_in(&s_blink_1_task, self->blink_interval);
 }

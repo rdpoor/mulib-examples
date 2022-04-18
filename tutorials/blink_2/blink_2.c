@@ -27,11 +27,11 @@
 
 #include "blink_2.h"
 
-#include "bsp.h"          // define led_off(), led_toggle()
 #include "mu_periodic.h"  // define mu_periodic_*
-#include "mu_platform.h"  // define mu_time_*
-#include "mu_sched.h"     // define mu_sched_*
-#include "mu_task.h"      // define mu_task_*
+#include "mu_sched.h"      // define mu_sched_*
+#include "mu_task.h"       // define mu_task_*
+#include "mu_time.h"       // define mu_time_*
+#include "tutorials_bsp.h" // define led_off(), led_toggle()
 
 // *****************************************************************************
 // Private types and definitions
@@ -51,7 +51,7 @@ typedef struct {
 static mu_task_t s_blink_2_task;
 
 // Allocate the blink_2 context
-static blink_1_ctx_t s_blink_2_ctx;
+static blink_2_ctx_t s_blink_2_ctx;
 
 // *****************************************************************************
 // Private (forward) declarations
@@ -63,19 +63,19 @@ static void blink_2_fn(void *ctx, void *arg);
 
 void blink_2_init(void) {
   mu_sched_init();      // initialize the scheduler
-  mu_platform_init();   // perform any platform-specific initializations
+  mu_time_init();       // perform platform-specific initializations
 
   // initialize s_blink_2_task to associate its function (blink_2_fn) with
   // its context (s_blink_2_ctx)
   mu_task_init(&s_blink_2_task, blink_2_fn, &s_blink_2_ctx, "Blink 2");
 
   // Make sure the LED is initially off
-  bsp_led_off();
+  tutorials_bsp_led_off();
 
   // Initialize and start the periodic timer
   mu_periodic_init(&s_blink_2_ctx.timer);
   mu_periodic_start(&s_blink_2_ctx.timer,
-                    mu_time_rel_to_ms(BLINK_INTERVAL_MS),
+                    mu_time_ms_to_rel(BLINK_INTERVAL_MS),
                     &s_blink_2_task);
 }
 
@@ -100,5 +100,5 @@ static void blink_2_fn(void *ctx, void *arg) {
   (void)arg;   // unused
 
   // Toggle the LED
-  bsp_led_toggle();
+  tutorials_bsp_led_toggle();
 }

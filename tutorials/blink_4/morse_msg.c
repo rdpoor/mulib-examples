@@ -27,10 +27,10 @@
 
 #include "morse_msg.h"
 
-#include "mu_platform.h"  // must precede #include mulib.h
-#include "mulib.h"
-#include "morse_char.h"
-#include <stdio.h>
+#include "mu_sched.h"      // define mu_sched_*
+#include "mu_task.h"       // define mu_task_*
+#include "mu_time.h"       // define mu_time_*
+#include "tutorials_bsp.h" // define led_off(), led_toggle()
 
 // =============================================================================
 // Local types and definitions
@@ -49,7 +49,7 @@ static void morse_msg_fn(void *ctx, void *arg);
 mu_task_t *morse_msg_init(morse_msg_t *morse_msg,
                           const char *message,
                           mu_task_t *on_completion) {
-  mu_task_init(&morse_msg->task, morse_msg_fn, &morse_msg, "Morse Msg");
+  mu_task_init(&morse_msg->task, morse_msg_fn, morse_msg, "Morse Msg");
 
   // Initialize s_morse_msg_ctx
   morse_msg->message = message;
@@ -68,17 +68,17 @@ static void morse_msg_fn(void *ctx, void *arg) {
   (void)arg;  // unused
 
   // Fetch the next character in the message
-  char ch = *self->message++;
+  char ch = *(self->message++);
 
   if (ch != '\0') {
     // Schedule sub-task to blink the ascii as morse code, and upon completion,
     // call this task again.
-    mu_task_call(morse_blinker_init(&self->blinker, ch, &self->task));
+    mu_task_call(morse_blinker_init(&self->blinker, ch, &self->task), NULL);
   } else {
     // Completed the message.   Call the on_completion task (if provided) after
     // a one second delay.
     if (self->on_completion != NULL) {
-      mu_sched_task_in(self->on_completion, MU_TIME_MS_TO_DURATION(1000));
+      mu_sched_in(self->on_completion, MU_TIME_MS_TO_REL(1000));
     }
   }
 }

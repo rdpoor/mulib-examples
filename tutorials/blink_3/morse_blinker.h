@@ -32,7 +32,6 @@ extern "C" {
 // =============================================================================
 // Includes
 
-#include "mu_platform.h"
 #include "mu_sched.h"
 #include "mu_task.h"
 
@@ -41,7 +40,7 @@ extern "C" {
 
 // Define the context for a morse_blinker task.
 typedef struct {
-  mu_task_t blinker_task;    // the task object itself
+  mu_task_t task;            // the task object itself
   const char *seq;           // the sequence of dots and dashes to be blinked.
   mu_task_t *on_completion;  // a task to call upon completion
 } morse_blinker_t;

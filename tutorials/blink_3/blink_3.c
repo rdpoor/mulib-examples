@@ -30,6 +30,7 @@
 #include "morse_blinker.h" // define morse_blinker_*
 #include "mu_sched.h"      // define mu_sched_*
 #include "mu_task.h"       // define mu_task_*
+#include <stddef.h>        // define NULL
 
 // *****************************************************************************
 // Private types and definitions
@@ -57,15 +58,15 @@ static void blink_3_fn(void *ctx, void *arg);
 
 void blink_3_init(void) {
   mu_sched_init();
-  mu_platform_init();
+  mu_time_init();
 
   // initialize s_blink_3_task to associate its function (blink_3_fn) with
   // its context (s_blink_3_ctx)
-  mu_task_init(&s_blink3_task, blink_3_fn, &s_blink_3_ctx, "Blink 3");
+  mu_task_init(&s_blink_3_task, blink_3_fn, &s_blink_3_ctx, "Blink 3");
 
   // Invoke the initial call to blink_3 task.  The on_completion callback from
   // morse_blinker will re-trigger it.
-  mu_task_call(&s_blink_3_task);
+  mu_task_call(&s_blink_3_task, NULL);
 }
 
 void blink_3_step(void) {
@@ -90,6 +91,7 @@ static void blink_3_fn(void *ctx, void *arg) {
   //   on_completion argument is the blink_3 task (i.e. this function), so the
   //   process repeats indefinitely.
   mu_task_call(morse_blinker_init(&s_blink_3_ctx.morse_blinker,
-                                  'A',
-                                  &s_blink_3_task));
+                                  'X',
+                                  &s_blink_3_task),
+               NULL);
 }

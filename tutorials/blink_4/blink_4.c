@@ -27,9 +27,11 @@
 
 #include "blink_4.h"
 
-#include "morse_str.h"     // define morse_str_*
+#include "morse_msg.h"     // define morse_msg_*
 #include "mu_sched.h"      // define mu_sched_*
 #include "mu_task.h"       // define mu_task_*
+#include "mu_time.h"       // define mu_time_*
+#include <stddef.h>        // define NULL
 
 // *****************************************************************************
 // Private types and definitions
@@ -37,7 +39,7 @@
 #define MESSAGE "Hello, world!"
 
 typedef struct {
-  morse_str_t morse_str;
+  morse_msg_t morse_msg;
 } blink_4_ctx_t;
 
 // *****************************************************************************
@@ -59,15 +61,15 @@ static void blink_4_fn(void *ctx, void *arg);
 
 void blink_4_init(void) {
   mu_sched_init();
-  mu_platform_init();
+  mu_time_init();
 
   // initialize s_blink_4_task to associate its function (blink_4_fn) with
   // its context (s_blink_4_ctx)
-  mu_task_init(&s_blink3_task, blink_4_fn, &s_blink_4_ctx, "Blink 4");
+  mu_task_init(&s_blink_4_task, blink_4_fn, &s_blink_4_ctx, "Blink 4");
 
   // Invoke the initial call to blink_4 task.  The on_completion callback from
   // morse_blinker will re-trigger it.
-  mu_task_call(&s_blink_4_task);
+  mu_task_call(&s_blink_4_task, NULL);
 }
 
 void blink_4_step(void) {
@@ -85,13 +87,14 @@ static void blink_4_fn(void *ctx, void *arg) {
 
   // Schedule sub-task to blink the ascii and upon completion, call this task.
   // Note a few things:
-  // * morse_str_init() returns a (pointer to a) task which can be called
+  // * morse_msg_init() returns a (pointer to a) task which can be called
   //   directly.
-  // * morse_str_init() takes an on_completion argument, which is a task to
-  //   be called when the morse str task completes.  In this case, the
-  //   on_completion argument is the blink_4 task (i.e. this function), so the
+  // * morse_msg_init() takes an on_completion argument, which is a task to
+  //   be called when the morse msg task completes.  In this case, the
+  //   on_completion argument is the blink_4 task (i.e. this task), so the
   //   process repeats indefinitely.
-  mu_task_call(morse_str_init(&s_blink_3_ctx.morse_str,
+  mu_task_call(morse_msg_init(&s_blink_4_ctx.morse_msg,
                               MESSAGE,
-                              &s_blink_4_task));
+                              &s_blink_4_task),
+               NULL);
 }
