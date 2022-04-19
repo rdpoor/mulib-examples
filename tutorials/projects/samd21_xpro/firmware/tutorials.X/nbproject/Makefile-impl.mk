@@ -27,7 +27,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=tutorials.X
 
 # Active Configuration
-DEFAULTCONF=blink_3
+DEFAULTCONF=blink_4
 CONF=${DEFAULTCONF}
 
 # All Configurations

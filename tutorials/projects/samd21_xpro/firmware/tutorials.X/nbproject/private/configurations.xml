@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="65">
   <projectmakefile>Makefile</projectmakefile>
-  <defaultConf>2</defaultConf>
+  <defaultConf>3</defaultConf>
   <confs>
     <conf name="blink_1" type="2">
       <platformToolSN>:=MPLABComm-USB-Microchip:=&lt;vid>03EB:=&lt;pid>2169:=&lt;rev>0101:=&lt;man>Atmel Corp.:=&lt;prod>EDBG CMSIS-DAP:=&lt;sn>ATML2130031800033320:=&lt;drv>x:=&lt;xpt>h:=end</platformToolSN>
