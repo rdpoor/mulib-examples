@@ -137,7 +137,6 @@ mu_sched_err_t mu_sched_step(void) {
     mu_task_call(s_sched.idle_task, NULL);
   } else {
     // No idle task provided.
-    __asm("nop");
   }
   return MU_SCHED_ERR_NONE;
 }
