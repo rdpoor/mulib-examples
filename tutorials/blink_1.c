@@ -63,6 +63,7 @@ static void blink_1_fn(void *ctx, void *arg);
 void tutorial_init(void) {
   mu_sched_init();      // initialize the scheduler
   mu_time_init();       // perform platform-specific initializations
+  tutorials_bsp_init(); // initialization for tutorial support
 
   // initialize s_blink_task to associate its function (blink_1_fn) with
   // its context (s_blink_1_ctx)

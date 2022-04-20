@@ -40,6 +40,8 @@ extern "C" {
 // =============================================================================
 // Types and definitions
 
+#define MU_STR_NOT_FOUND SIZE_MAX
+
 typedef struct {
   const mu_strbuf_t *buf; // reference to underlying buffer
   size_t s;               // index of next byte to be read, or start of string
@@ -96,10 +98,11 @@ mu_str_t *mu_str_copy(mu_str_t *dst, const mu_str_t *src);
  *
  * @param str the mu_str
  * @param byte the byte to search for.
- * @return the index of the byte, relative to the str start index, or -1 if
- *         if the byte was not found between the start and end of str.
+ * @return the index of the byte, relative to the str start index, or
+ *         MU_STR_NOT_FOUND if if the byte was not found between the
+ *         start and end of str.
  */
-int mu_str_index(mu_str_t *str, uint8_t byte);
+size_t mu_str_index(mu_str_t *str, uint8_t byte);
 
 /**
  * @brief Make a slice of a mu_str

@@ -62,7 +62,7 @@ mu_strbuf_t *mu_strbuf_init_from_cstr(mu_strbuf_t *buf,
   return mu_strbuf_init_ro(buf, (const uint8_t *const)cstr, strlen(cstr));
 }
 
-const uint8_t *const mu_strbuf_rdata(const mu_strbuf_t *buf) {
+uint8_t const *mu_strbuf_rdata(const mu_strbuf_t *buf) {
   return buf->rdata;
 }
 

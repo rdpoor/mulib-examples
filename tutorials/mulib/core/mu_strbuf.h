@@ -59,7 +59,7 @@ mu_strbuf_t *mu_strbuf_init_wr(mu_strbuf_t *buf,
 
 mu_strbuf_t *mu_strbuf_init_from_cstr(mu_strbuf_t *buf, const char *const cstr);
 
-const uint8_t *const mu_strbuf_rdata(const mu_strbuf_t *buf);
+uint8_t const *mu_strbuf_rdata(const mu_strbuf_t *buf);
 
 uint8_t *mu_strbuf_wdata(const mu_strbuf_t *buf);
 

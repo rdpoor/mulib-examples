@@ -137,7 +137,7 @@ mu_sched_err_t mu_sched_step(void) {
     mu_task_call(s_sched.idle_task, NULL);
   } else {
     // No idle task provided.
-    asm("nop");
+    __asm("nop");
   }
   return MU_SCHED_ERR_NONE;
 }
@@ -219,11 +219,14 @@ mu_sched_err_t mu_sched_from_isr(mu_task_t *task) {
 }
 
 mu_sched_task_status_t mu_sched_get_task_status(mu_task_t *task) {
+  (void)task;
   // TODO: stub.  Will this ever be used?
   return MU_SCHED_TASK_STATUS_IDLE;
 }
 
 mu_task_t *mu_sched_traverse(mu_sched_traverse_fn user_fn, void *arg) {
+  (void)user_fn;
+  (void)arg;
   // TODO: stub.  Will this ever be used?
   return NULL;
 }

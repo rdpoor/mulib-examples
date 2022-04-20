@@ -42,6 +42,10 @@
 // *****************************************************************************
 // Public code
 
+void tutorials_bsp_init(void) {
+  // no intialization needed
+}
+
 void tutorials_bsp_led_on(void) { LED_On(); }
 
 void tutorials_bsp_led_off(void) { LED_Off(); }

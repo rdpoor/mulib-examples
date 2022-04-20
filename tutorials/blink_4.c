@@ -46,6 +46,7 @@
 #include "mu_sched.h"      // define mu_sched_*
 #include "mu_task.h"       // define mu_task_*
 #include "mu_time.h"       // define mu_time_*
+#include "tutorials_bsp.h" // define led_off(), led_toggle()
 #include <stddef.h>        // define NULL
 
 // *****************************************************************************
@@ -75,8 +76,9 @@ static void blink_4_fn(void *ctx, void *arg);
 // Public code
 
 void tutorial_init(void) {
-  mu_sched_init();
-  mu_time_init();
+  mu_sched_init();      // initialize the scheduler
+  mu_time_init();       // perform platform-specific initializations
+  tutorials_bsp_init(); // initialization for tutorial support
 
   // initialize s_blink_4_task to associate its function (blink_4_fn) with
   // its context (s_blink_4_ctx)

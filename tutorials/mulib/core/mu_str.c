@@ -43,7 +43,7 @@
 
 static size_t str_capacity(const mu_str_t *str);
 
-static uint8_t str_append(mu_str_t *dst, const uint8_t *src, int count);
+static uint8_t str_append(mu_str_t *dst, const uint8_t *src, size_t count);
 
 // =============================================================================
 // local storage
@@ -77,15 +77,15 @@ mu_str_t *mu_str_copy(mu_str_t *dst, const mu_str_t *src) {
   return (mu_str_t *)memcpy(dst, src, sizeof(mu_str_t));
 }
 
-int mu_str_index(mu_str_t *str, uint8_t byte) {
-  for (int i = str->s; i < str->e; i++) {
+size_t mu_str_index(mu_str_t *str, uint8_t byte) {
+  for (size_t i = str->s; i < str->e; i++) {
     uint8_t b = mu_strbuf_rdata(str->buf)[i];
     if (b == byte) {
       return i - str->s;
     }
   }
   // not found
-  return -1;
+  return MU_STR_NOT_FOUND;
 }
 
 mu_str_t *mu_str_slice(mu_str_t *dst, const mu_str_t *src, int start, int end) {
@@ -112,9 +112,10 @@ mu_str_t *mu_str_slice(mu_str_t *dst, const mu_str_t *src, int start, int end) {
   if (s1 > len) {
     s1 = len;
   }
-  if (e1 < 0) {
-    e1 = 0;
-  }
+  // TODO: what is the proper test here (e1 is unsigned)
+//  if (e1 < 0) {
+//    e1 = 0;
+//  }
   if (s1 > e1) {
     s1 = e1;
   }
@@ -280,7 +281,7 @@ static size_t str_capacity(const mu_str_t *str) {
   return mu_strbuf_capacity(str->buf);
 }
 
-static uint8_t str_append(mu_str_t *dst, const uint8_t *src, int count) {
+static uint8_t str_append(mu_str_t *dst, const uint8_t *src, size_t count) {
   size_t available = mu_str_available_wr(dst);
   if (count > available) {
     count = available;
