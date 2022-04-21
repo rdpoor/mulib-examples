@@ -27,6 +27,7 @@
 
 #include "mu_access_mgr.h"
 
+#include "mu_pqueue.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -43,9 +44,11 @@
 // *****************************************************************************
 // Public code
 
-mu_access_mgr_t *mu_access_mgr_init(mu_access_mgr_t *mgr) {
+mu_access_mgr_t *mu_access_mgr_init(mu_access_mgr_t *mgr,
+                                    void *qstorage,
+                                    size_t capacity) {
   mgr->owner = NULL;
-  mu_task_list_init(&mgr->pending);
+  mu_pqueue_init(&mgr->pending, qstorage, capacity);
   return mgr;
 }
 
@@ -53,7 +56,7 @@ void mu_access_mgr_reset(mu_access_mgr_t *mgr) {
   mu_task_t *task;
 
   mgr->owner = NULL;
-  while ((task = mu_task_list_pop_task(&mgr->pending)) != NULL) {
+  while ((task = (mu_task_t *)mu_pqueue_get(&mgr->pending)) != NULL) {
     // invoke each pending task.
     mu_task_call(task, NULL);
   }
@@ -65,12 +68,10 @@ mu_access_mgr_err_t mu_access_mgr_request_ownership(mu_access_mgr_t *mgr,
     // no tasks currently own the resource -- grab it immediately.
     mgr->owner = task;
     mu_task_call(task, NULL);
-  } else {
-    // queue task on pending list (if possible)
-    if (mu_task_list_append_task(&mgr->pending, task) == NULL) {
-      // could not queue task.
-      return MU_ACCESS_MGR_ERR_TASK_UNAVAILABLE;
-    }
+
+  } else if (mu_pqueue_put(&mgr->pending, task) == NULL) {
+    // could not queue task.
+    return MU_ACCESS_MGR_ERR_TASK_UNAVAILABLE;
   }
   return MU_ACCESS_MGR_ERR_NONE;
 }
@@ -79,12 +80,13 @@ mu_access_mgr_err_t mu_access_mgr_release_ownership(mu_access_mgr_t *mgr,
                                                     mu_task_t *task) {
   if (task == mgr->owner) {
     // The current owner is releasing ownership: trigger the next task (if any).
-    if ((mgr->owner = mu_task_list_pop_task(&mgr->pending)) != NULL) {
-      mu_task_call(mgr->owner, NULL);
-    }
-  } else if (mu_task_list_remove_task(&mgr->pending, task) == NULL) {
+    mgr->owner = (mu_task_t *)mu_pqueue_get(&mgr->pending);
+    mu_task_call(mgr->owner, NULL);  // mu_task_call accepts null task argument.
+
+  } else if (mu_pqueue_delete(&mgr->pending, task) == NULL) {
     return MU_ACCESS_MGR_ERR_NOT_PENDING;
   }
+
   return MU_ACCESS_MGR_ERR_NONE;
 }
 

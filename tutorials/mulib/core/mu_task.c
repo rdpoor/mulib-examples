@@ -27,8 +27,6 @@
 
 #include "mu_task.h"
 
-#include "mu_list.h"
-#include "mu_task_list.h"
 #include <stddef.h>
 
 // *****************************************************************************
@@ -43,16 +41,14 @@
 // *****************************************************************************
 // Public code
 
-mu_task_t *mu_task_init(mu_task_t *task, 
-                        mu_task_fn fn, 
-                        void *ctx, 
+mu_task_t *mu_task_init(mu_task_t *task,
+                        mu_task_fn fn,
+                        void *ctx,
                         const char *task_name) {
   (void)task_name;  // will be used when MU_CONFIG_PROFILING_TASKS is defined
 
   task->fn = fn;
   task->ctx = ctx;
-  mu_list_init(&task->_link);
-  task->_task_list = NULL;
   return task;
 }
 
@@ -64,12 +60,6 @@ void mu_task_call(mu_task_t *task, void *arg) {
   if (task != NULL) { // allow null task => no-op
     task->fn(task->ctx, arg);
   }
-}
-
-mu_list_t *mu_task_get_link(mu_task_t *task) { return &task->_link; }
-
-struct _mu_task_list *mu_task_get_task_list(mu_task_t *task) {
-  return task->_task_list;
 }
 
 // *****************************************************************************

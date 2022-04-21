@@ -33,10 +33,9 @@ following calls:
    mu_sched_err_t mu_sched_at(mu_task_t *task, mu_time_abs_t at);
    mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in);
 
-Each of these functions add a task to the scheduler's queue.  Attempting to
-schedule a task that is already scheduled will return an error code.
+Each of these functions add a task to the scheduler's queue.
 
-mu_sched supports safely scheduling a task from interrupt level:
+mu_sched also supports safely scheduling a task from interrupt level:
 
    mu_sched_err_t mu_sched_from_isr(mu_task_t *task);
 
@@ -89,7 +88,7 @@ typedef enum {
 // Signature for clock source function.  Returns the current time.
 typedef mu_time_abs_t (*mu_clock_fn)(void);
 
-// An event associates a task and a time.  It it private to mu_sched.
+// A mu_sched_event associates a task and a time.
 typedef struct {
   mu_time_abs_t at;
   mu_task_t *task;
@@ -133,7 +132,7 @@ void mu_sched_reset(void);
 mu_sched_err_t mu_sched_step(void);
 
 /**
- * @brief Return the current clock souce.
+ * @brief Return the current clock source.
  */
 mu_clock_fn mu_sched_get_clock_source(void);
 
@@ -164,7 +163,7 @@ mu_task_t *mu_sched_get_idle_task(void);
 void mu_sched_set_idle_task(mu_task_t *task);
 
 /**
- * @brief Return the current task being processeed, or NULL if none.
+ * @brief Return the current task being processed, or NULL if none.
  */
 mu_task_t *mu_sched_get_current_task(void);
 
@@ -191,7 +190,7 @@ mu_sched_err_t mu_sched_remove_task(mu_task_t *task);
 mu_sched_err_t mu_sched_now(mu_task_t *task);
 
 /**
- * @brief Schedule a task to be run at a particular time.
+ * @brief Schedule a task to be run at a particular time in the future.
  */
 mu_sched_err_t mu_sched_at(mu_task_t *task, mu_time_abs_t at);
 
@@ -216,13 +215,12 @@ mu_sched_err_t mu_sched_from_isr(mu_task_t *task);
  *
  *    mu_task_t *user_fn(mu_sched_event_t *event, void *arg)
  *
- * Traversing the list continues until events have been visited, or the
+ * Traversing the list continues until all events have been visited, or the
  * user function returns a non-null value.
  *
  * @param user_fn The function to call with each event in the schedule.
  * @param arg The value supplied as the second argument to the user fun.
- * @return A non-null value returned by the user function, or NULL if the end of
- *         the list is reached.
+ * @return A non-null value returned by the user function, or NULL otherwise.
  */
 void *mu_sched_visit_deferred_events(mu_sched_visit_event_fn user_fn, void *arg);
 
@@ -238,8 +236,7 @@ void *mu_sched_visit_deferred_events(mu_sched_visit_event_fn user_fn, void *arg)
  *
  * @param user_fn The function to call with each task the immediate queue.
  * @param arg The value supplied as the second argument to the user fun.
- * @return A non-null value returned by the user function, or NULL if the end of
- *         the list is reached.
+ * @return A non-null value returned by the user function, or NULL otherwise.
  */
 void *mu_sched_visit_immediate_tasks(mu_sched_visit_task_fn user_fn, void *arg);
 
