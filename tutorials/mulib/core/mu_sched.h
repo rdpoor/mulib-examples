@@ -65,7 +65,6 @@ extern "C" {
 // =============================================================================
 // includes
 
-#include "mu_event.h"
 #include "mu_task.h"
 #include "mu_time.h"
 #include <stdbool.h>
@@ -75,8 +74,8 @@ extern "C" {
 // =============================================================================
 // types and definitions
 
-#ifndef MU_SCHED_MAX_EVENTS
-#define MU_SCHED_MAX_EVENTS 30
+#ifndef MU_SCHED_MAX_DEFERRED_TASKS
+#define MU_SCHED_MAX_DEFERRED_TASKS 30
 #endif
 
 typedef enum {
@@ -85,27 +84,34 @@ typedef enum {
   MU_SCHED_ERR_EMPTY,
   MU_SCHED_ERR_FULL,
   MU_SCHED_ERR_NOT_FOUND,
-  MU_SCHED_ERR_ALREADY_SCHEDULED,
 } mu_sched_err_t;
-
-typedef enum {
-  MU_SCHED_TASK_STATUS_IDLE,      // not scheduled
-  MU_SCHED_TASK_STATUS_SCHEDULED, // in the schedule, not yet runnable
-  MU_SCHED_TASK_STATUS_RUNNABLE,  // in the schedule, ready to run
-  MU_SCHED_TASK_STATUS_ACTIVE,    // currently running
-} mu_sched_task_status_t;
 
 // Signature for clock source function.  Returns the current time.
 typedef mu_time_abs_t (*mu_clock_fn)(void);
 
+// An event associates a task and a time.  It it private to mu_sched.
+typedef struct {
+  mu_time_abs_t at;
+  mu_task_t *task;
+} mu_sched_event_t;
+
 /**
- * @brief Signature for a function passed to mu_sched_traverse.
+ * @brief Signature for a function passed to mu_sched_visit_events.
+ *
+ * @param event a pointer to an event.
+ * @param arg A user-supplied argument.
+ * @return A NULL value to continue traversing, a non-null value to stop.
+ */
+typedef void *(*mu_sched_visit_event_fn)(mu_sched_event_t *event, void *arg);
+
+/**
+ * @brief Signature for a function passed to mu_sched_visit_immediate_tasks.
  *
  * @param task a pointer to a task.
  * @param arg A user-supplied argument.
  * @return A NULL value to continue traversing, a non-null value to stop.
  */
-typedef void *(*mu_sched_traverse_fn)(mu_task_t *task, void *arg);
+typedef void *(*mu_sched_visit_task_fn)(mu_task_t *task, void *arg);
 
 // =============================================================================
 // declarations
@@ -141,6 +147,11 @@ mu_clock_fn mu_sched_get_clock_source(void);
 void mu_sched_set_clock_source(mu_clock_fn clock_fn);
 
 /**
+ * @brief Return the scheduler's idea of time according to the clock source.
+ */
+mu_time_abs_t mu_sched_get_current_time(void);
+
+/**
  * @brief Return the idle task.
  */
 mu_task_t *mu_sched_get_idle_task(void);
@@ -153,70 +164,44 @@ mu_task_t *mu_sched_get_idle_task(void);
 void mu_sched_set_idle_task(mu_task_t *task);
 
 /**
- * @brief Return true if there are no items in the schedule.
- */
-bool mu_sched_is_empty(void);
-
-/**
- * @brief Return the scheduler's idea of time according to the clock source.
- */
-mu_time_abs_t mu_sched_get_current_time(void);
-
-/**
- * @brief Return the task currently being run, or NULL if none.
+ * @brief Return the current task being processeed, or NULL if none.
  */
 mu_task_t *mu_sched_get_current_task(void);
 
 /**
- * @brief Return the current event being processeed, or NULL if none.
+ * @brief Return the next task to be run or NULL if there isn't one.
  */
-mu_event_t *mu_sched_get_current_event(void);
-
-/**
- * @brief Return the next event to be run or NULL if there isn't one.
- */
-mu_event_t *mu_sched_peek_next_event(void);
+mu_sched_event_t *mu_sched_peek_next_event(void);
 
 /**
  * @brief Remove a scheduled task.
  *
  * @param task The task to be removed.
- * @return The task that was removed, or NULL if it was not scheduled.
+ * @return MU_SCHED_ERR_NOT_FOUND if the task was not present in the schedule,
+ *         MU_SCHED_ERR_NONE otherwise.
  */
-mu_task_t *mu_sched_remove_task(mu_task_t *task);
+mu_sched_err_t mu_sched_remove_task(mu_task_t *task);
 
 /**
  * @brief Schedule (or reschedule) a task to be run as soon as possible.
  *
  * Note: If there are other runnable tasks, the new task will be scheduled after
  * those have run.
- *
- * Note: If the task is currently in the schedule, this will return the error
- * MU_SCHED_ERR_ALREADY_SCHEDULED
  */
 mu_sched_err_t mu_sched_now(mu_task_t *task);
 
 /**
  * @brief Schedule a task to be run at a particular time.
- *
- * Note: If the task is currently in the schedule, this will return the error
- * MU_SCHED_ERR_ALREADY_SCHEDULED
  */
 mu_sched_err_t mu_sched_at(mu_task_t *task, mu_time_abs_t at);
 
 /**
  * @brief Schedule a task to be run after a given interval.
- *
- * Note: If the task is currently in the schedule, this will return the error
- * MU_SCHED_ERR_ALREADY_SCHEDULED
  */
 mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in);
 
 /**
  * @brief Schedule a task from interrupt level.
- *
- * Note: At the next call to mu_sched_step(), if the task is currently in the
- * schedule, it will be removed and re-scheduled.
  *
  * @param task The task to be scheduled.
  * @return MU_SCHED_ERR_NONE on no error, MU_SCHED_ERR_FULL if the interrupt
@@ -225,35 +210,38 @@ mu_sched_err_t mu_sched_in(mu_task_t *task, mu_time_rel_t in);
 mu_sched_err_t mu_sched_from_isr(mu_task_t *task);
 
 /**
- * @brief Return the status of a task.
+ * @brief Call a user-supplied function for each deferred event in the schedule.
  *
- * Task status may be one of
- * * MU_SCHED_TASK_STATUS_IDLE -- task is not scheduled
- * * MU_SCHED_TASK_STATUS_SCHEDULED --  task is scheduled but not yet runnable
- * * MU_SCHED_TASK_STATUS_RUNNABLE -- task is ready to run
- * * MU_SCHED_TASK_STATUS_ACTIVE -- task is currently running
+ * The user-supplied function has the signature:
  *
- * @param task The task being queried.
- * @return task status.
+ *    mu_task_t *user_fn(mu_sched_event_t *event, void *arg)
+ *
+ * Traversing the list continues until events have been visited, or the
+ * user function returns a non-null value.
+ *
+ * @param user_fn The function to call with each event in the schedule.
+ * @param arg The value supplied as the second argument to the user fun.
+ * @return A non-null value returned by the user function, or NULL if the end of
+ *         the list is reached.
  */
-mu_sched_task_status_t mu_sched_get_task_status(mu_task_t *task);
+void *mu_sched_visit_deferred_events(mu_sched_visit_event_fn user_fn, void *arg);
 
 /**
- * @brief Call a user-supplied function for each task in the schedule.
+ * @brief Call a user-supplied function for each immediate task in the schedule.
  *
  * The user-supplied function has the signature:
  *
  *    mu_task_t *user_fn(mu_task_t *task, void *arg)
  *
- * Traversing the list continues until the end of the list is reached, or the
- * user function returns a non-null value.
+ * Traversing the list continues until all immediate tasks have been visited, or
+ * the user function returns a non-null value.
  *
- * @param user_fn The function to call with each element of the schedule.
- * @param arg The value supplies as the second argument to the user fun.
+ * @param user_fn The function to call with each task the immediate queue.
+ * @param arg The value supplied as the second argument to the user fun.
  * @return A non-null value returned by the user function, or NULL if the end of
  *         the list is reached.
  */
-mu_task_t *mu_sched_traverse(mu_sched_traverse_fn user_fn, void *arg);
+void *mu_sched_visit_immediate_tasks(mu_sched_visit_task_fn user_fn, void *arg);
 
 #ifdef __cplusplus
 }

@@ -96,7 +96,6 @@
       <logicalFolder name="mulib" displayName="mulib" projectFiles="true">
         <logicalFolder name="core" displayName="core" projectFiles="true">
           <itemPath>../../../mulib/core/mu_access_mgr.c</itemPath>
-          <itemPath>../../../mulib/core/mu_event.c</itemPath>
           <itemPath>../../../mulib/core/mu_list.c</itemPath>
           <itemPath>../../../mulib/core/mu_periodic.c</itemPath>
           <itemPath>../../../mulib/core/mu_queue.c</itemPath>
@@ -522,6 +521,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-fff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/r/Projects/mulib-examples/tutorials/projects/attiny817/attiny817.X/debug/blink_1/attiny817_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
@@ -835,6 +836,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-fff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/r/Projects/mulib-examples/tutorials/projects/attiny817/attiny817.X/debug/blink_2/attiny817_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
@@ -1150,6 +1153,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-fff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/r/Projects/mulib-examples/tutorials/projects/attiny817/attiny817.X/debug/blink_3/attiny817_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
@@ -1465,6 +1470,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="0-fff"/>
         <property key="poweroptions.powerenable" value="false"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/r/Projects/mulib-examples/tutorials/projects/attiny817/attiny817.X/debug/blink_4/attiny817_ptg"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.preservedataflash" value="false"/>
         <property key="programoptions.preservedataflash.ranges"
