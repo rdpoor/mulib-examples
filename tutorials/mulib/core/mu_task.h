@@ -52,6 +52,7 @@ typedef void (*mu_task_fn)(void *ctx, void *arg);
 typedef struct {
   mu_task_fn fn;                    // function to call
   void *ctx;                        // context to pass when called
+  const char *name;                 // debugging
 } mu_task_t;
 
 // *****************************************************************************

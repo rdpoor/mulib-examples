@@ -42,7 +42,7 @@
 // Private types and definitions
 
 #define TUTORIAL_INTERVAL_MS 5000
-#define RESERVE_MS 50
+#define RESERVE_MS 1000
 
 #define MAX_PENDING_TASKS 2
 
@@ -99,6 +99,8 @@ void tutorial_init(void) {
   mu_time_init();       // perform platform-specific initializations
   tutorials_bsp_init(); // platform-specific initialization for tutorials
 
+  tutorials_bsp_puts("\n# ==================================");
+
   mu_access_mgr_init(&s_access_mgr, s_pending_tasks, MAX_PENDING_TASKS);
 
   // Initialize and start the periodic timer.  It will invoke the
@@ -138,13 +140,20 @@ static void requestor_fn(void *ctx, void *arg) {
   requestor_ctx_t *self = (requestor_ctx_t *)ctx;
   (void)arg;
 
-  printf("\n%ld: %s state %d", mu_time_now(), self->name, self->state);
+  // printf("\n%9ld: %s state %d", mu_time_now(), self->name, self->state);
   switch (self->state) {
   case REQUESTOR_STATE_IDLE: {
     // Here when the task first starts. Request access to standard output.
+    // NOTE: set desired state before calling mu_access_mgr_request_ownership()
+    // since mu_access_mgr_request_ownership() may call back immediately.
     self->state = REQUESTOR_STATE_AWAIT_STDOUT;
-    // access_mgr will invovke this task when access is granted.
-    mu_access_mgr_request_ownership(&s_access_mgr, &self->task);
+    if (mu_access_mgr_request_ownership(&s_access_mgr, &self->task) != MU_ACCESS_MGR_ERR_NONE) {
+      // was unable to request ownership, most likely already requested
+      tutorials_bsp_puts("\n");
+      tutorials_bsp_puts(self->name);
+      tutorials_bsp_puts(" is already reserving stdout");
+      // remain in REQUESTOR_STATE_IDLE
+    }
   } break;
 
   case REQUESTOR_STATE_AWAIT_STDOUT: {

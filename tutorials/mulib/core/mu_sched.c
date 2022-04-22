@@ -37,6 +37,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <stdio.h> // debugging
+
 // *****************************************************************************
 // Local (private) types and definitions
 
@@ -71,6 +73,11 @@ static void process_irq_tasks(void);
  */
 static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at);
 
+/**
+ * @brief Debugging: print contents of schedule
+ */
+static void print_sched(void);
+
 // *****************************************************************************
 // Local (private, static) storage
 
@@ -100,6 +107,11 @@ mu_sched_err_t mu_sched_step(void) {
   if (event && !mu_time_follows(event->at, now)) {
     // time has arrived!
     s_sched.event_count -= 1;
+    // printf("\n%9ld: (%d in sched) Running %s",
+    //        now,
+    //        s_sched.event_count,
+    //        event->task->name);
+    print_sched();
     s_sched.current_task = event->task;
     mu_task_call(event->task, NULL);
     s_sched.current_task = NULL;
@@ -207,6 +219,9 @@ static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
   mu_sched_event_t *event;
 
   if (s_sched.event_count == MU_SCHED_MAX_DEFERRED_TASKS) {
+    // printf("\n%09ld: Cannot schedule %s: schedule is full",
+    //        mu_time_now(),
+    //        task->name);
     return MU_SCHED_ERR_FULL;
   }
 
@@ -216,7 +231,7 @@ static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
     event = &s_sched.events[i-1];
     // Strict ordering: if a task already is scheduled for 'at', schedule this
     // new event to follow it.
-    if (mu_time_precedes(event->at, at)) {
+    if (mu_time_follows(event->at, at)) {
       break;
     }
     i -= 1;
@@ -235,6 +250,26 @@ static mu_sched_err_t sched_aux(mu_task_t *task, mu_time_abs_t at) {
   event->at = at;
   event->task = task;
   s_sched.event_count += 1;
-
+  // printf("\n%9ld: (%d in sched) Schedule %s at %ld",
+  //        mu_time_now(),
+  //        s_sched.event_count,
+  //        event->task->name,
+  //        at);
+  print_sched();
   return MU_SCHED_ERR_NONE;
+}
+
+// debugging
+static void print_sched(void) {
+  // printf("\nAt %9ld:", mu_time_now());
+  //
+  // if (s_sched.event_count == 0) {
+  //   printf("\n  schedule is empty");
+  //   return;
+  // }
+  //
+  // for (size_t i=0; i<s_sched.event_count; i++) {
+  //   mu_sched_event_t *event = &s_sched.events[i];
+  //   printf("\n[%02d] %9ld: %s", i, event->at, event->task->name);
+  // }
 }

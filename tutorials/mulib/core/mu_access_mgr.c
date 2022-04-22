@@ -70,6 +70,14 @@ mu_access_mgr_err_t mu_access_mgr_request_ownership(mu_access_mgr_t *mgr,
     mu_task_call(task, NULL);
     return MU_ACCESS_MGR_ERR_NONE;
 
+  } else if (mgr->owner == task) {
+    // task already has exlusive access
+    return MU_ACCESS_MGR_ERR_ALREADY_OWNER;
+
+  } else if (mu_pqueue_contains(&mgr->pending, task)) {
+    // task is already queued for access
+    return MU_ACCESS_MGR_ERR_ALREADY_PENDING;
+
   } else if (mu_pqueue_put(&mgr->pending, task) == NULL) {
     // could not queue task.
     return MU_ACCESS_MGR_ERR_TASK_UNAVAILABLE;
