@@ -68,12 +68,16 @@ mu_access_mgr_err_t mu_access_mgr_request_ownership(mu_access_mgr_t *mgr,
     // no tasks currently own the resource -- grab it immediately.
     mgr->owner = task;
     mu_task_call(task, NULL);
+    return MU_ACCESS_MGR_ERR_NONE;
 
   } else if (mu_pqueue_put(&mgr->pending, task) == NULL) {
     // could not queue task.
     return MU_ACCESS_MGR_ERR_TASK_UNAVAILABLE;
+
+  } else {
+    // request queued
+    return MU_ACCESS_MGR_ERR_NONE;
   }
-  return MU_ACCESS_MGR_ERR_NONE;
 }
 
 mu_access_mgr_err_t mu_access_mgr_release_ownership(mu_access_mgr_t *mgr,

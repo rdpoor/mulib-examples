@@ -54,5 +54,15 @@ void tutorials_bsp_led_toggle(void) { LED_Toggle(); }
 
 bool tutorials_bsp_button_is_pressed(void) { return SW0_GetValue() == 0; }
 
+bool tutorials_bsp_kbhit(void) { return USART0_IsRxReady(); }
+
+bool tutorials_bsp_getch(void) { return USART0_Read(); }
+
+void tutorials_bsp_puts(const char *str) {
+    while (*str) {
+        USART0_Write(*str++);
+    }
+}
+
 // *****************************************************************************
 // Private (static) code

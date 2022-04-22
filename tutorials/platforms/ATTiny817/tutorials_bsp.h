@@ -62,6 +62,12 @@ void tutorials_bsp_led_toggle(void);
 
 bool tutorials_bsp_button_is_pressed(void);
 
+bool tutorials_bsp_kbhit(void);
+
+bool tutorials_bsp_getch(void);
+
+void tutorials_bsp_puts(const char *str);
+
 // *****************************************************************************
 // End of file
 

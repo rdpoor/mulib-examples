@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=attiny817.X
 
 # Active Configuration
-DEFAULTCONF=blink_4
+DEFAULTCONF=access_mgr_1
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=default blink_1 blink_2 blink_3 blink_4 
+ALLCONFS=default blink_1 blink_2 blink_3 blink_4 access_mgr_1 
 
 
 # build
@@ -50,6 +50,7 @@ ALLCONFS=default blink_1 blink_2 blink_3 blink_4
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=blink_2 clean
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=blink_3 clean
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=blink_4 clean
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=access_mgr_1 clean
 
 
 
@@ -60,6 +61,7 @@ ALLCONFS=default blink_1 blink_2 blink_3 blink_4
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=blink_2 build
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=blink_3 build
 	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=blink_4 build
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=access_mgr_1 build
 
 
 

@@ -36,6 +36,10 @@
                     <name>blink_4</name>
                     <type>2</type>
                 </confElem>
+                <confElem>
+                    <name>access_mgr_1</name>
+                    <type>2</type>
+                </confElem>
             </confList>
             <formatting>
                 <project-formatting-style>false</project-formatting-style>
