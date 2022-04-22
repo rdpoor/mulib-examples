@@ -57,7 +57,7 @@ int8_t RTC_Initialize()
     RTC.INTCTRL = 0x01;
 
     //Clock selection
-    RTC.CLKSEL = 0x01;
+    RTC.CLKSEL = 0x00;
 
     //RUNSTDBY disabled; PRESCALER DIV1; RTCEN enabled; 
     RTC.CTRLA = 0x01;

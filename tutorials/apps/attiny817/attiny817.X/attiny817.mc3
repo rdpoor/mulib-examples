@@ -3240,7 +3240,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="ClockSource"/>
-         <value>Internal 1kHz OSC</value>
+         <value>Internal 32kHz OSC</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="ExternalClock"/>
@@ -3252,11 +3252,11 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="PIN_TOSC1"/>
-         <value></value>
+         <value>TOSC1</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="PIN_TOSC2"/>
-         <value></value>
+         <value>TOSC2</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="Prescaler"/>
@@ -3280,7 +3280,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="actualPeriod"/>
-         <value>65.536 s</value>
+         <value>2.048 s</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="compare"/>
@@ -3288,11 +3288,11 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="compare_MAX"/>
-         <value>65.536 s</value>
+         <value>2.048 s</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="compare_MIN"/>
-         <value>2 ms</value>
+         <value>62.5 us</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="componentName"/>
@@ -3324,7 +3324,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="period"/>
-         <value>65.536 s</value>
+         <value>2.048s</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="periodSelection"/>
@@ -3332,15 +3332,15 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="period_MAX"/>
-         <value>65.536 s</value>
+         <value>2.048 s</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="period_MIN"/>
-         <value>2 ms</value>
+         <value>62.5 us</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="rtcClock"/>
-         <value>1000</value>
+         <value>32000</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="RTC" registerAlias="CLKSEL" settingAlias="CLKSEL" alias="EXTCLK"/>
@@ -3572,7 +3572,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="RTC" registerAlias="CLKSEL"/>
-         <value>1</value>
+         <value>0</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="RTC" registerAlias="CMP"/>
@@ -3624,7 +3624,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="RTC" registerAlias="CLKSEL" settingAlias="CLKSEL"/>
-         <value>INT1K</value>
+         <value>INT32K</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="RTC" registerAlias="CMPI" settingAlias="enable"/>
@@ -5675,126 +5675,126 @@
          <value>disabled</value>
       </entry>
    </tokenMap>
-   <generatedFileHashHistoryMap class="java.util.TreeMap">
+   <generatedFileHashHistoryMap class="java.util.HashMap">
       <entry>
-         <file>main.c</file>
-         <hash>8b76475def75f92097ff26a70d838b634e953a0dd4190952888f58b50a14684a</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\config\clock_config.h</file>
-         <hash>7b1c1e9f6c2f085d0e81028d1654d8d5fb624dbce9e9de95934dc22e440573fe</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\device_config.c</file>
-         <hash>778e7f9f28c85d82459889b53af18a1adfc768c0b95c13170861a0fede197461</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\examples\twi0_master_example.c</file>
-         <hash>482b5a1d210b3913393a920f55c4f07c7e59b9bffbb346c30c874af21b935eda</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\examples\twi0_master_example.h</file>
-         <hash>e1de0ae002d15ba3ded756ca04e0385fb3fc2e3432bf1e4c32e0573a4d5baa04</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\include\ccp.h</file>
-         <hash>22e7d99bcc49431790cb3e753fb927a08cebbc39a73d856703265012658dcf65</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\include\cpuint.h</file>
-         <hash>da63c787ba48433d3e811e61c16beaa5f4a59287ce249f3f4daba920f3c0181c</hash>
+         <file>mcc_generated_files\src\protected_io.S</file>
+         <hash>c4e49c1c9d36689251b3db613deca9e7f86416e30d48453acde5162e25b824c3</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\include\pin_manager.h</file>
          <hash>59ad421cc924161375001b387ffe2f2d34f8b15a038f976821e5bc12dedc9a07</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\include\port.h</file>
-         <hash>98e1431d21795b7fad6568d9aedbf10fa05edebfe4cdde13a188de5e094c9fb6</hash>
+         <file>mcc_generated_files\utils\compiler.h</file>
+         <hash>40dfa79993fd23745164abbfe1df0d89cf61f961b028387e09eeaaf28553ba1b</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\include\protected_io.h</file>
-         <hash>b8dfc2e3f281d601a92170b37d8ead16a0498fdeb2c69ccd3bdeae317231a474</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\include\rstctrl.h</file>
-         <hash>c4788a51fb6dc0c5164447b3c485e2540ec3b7f29b32d3803be63153299db544</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\include\rtc.h</file>
-         <hash>88762b5dea67966acd9121819569df0957ac4f5d42022fe1b6d8fec8c2632d71</hash>
+         <file>mcc_generated_files\examples\twi0_master_example.h</file>
+         <hash>e1de0ae002d15ba3ded756ca04e0385fb3fc2e3432bf1e4c32e0573a4d5baa04</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\include\twi0_master.h</file>
          <hash>37c9f85a1ef7caa9f7c9171b5e506c4d3b1a67b465338728874c853bd5e731de</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\include\usart0.h</file>
-         <hash>6d6d5e78bd7873d9c7aa7ee423ac3820aa71f9bbbe02beddaee8b1c1299188c6</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\mcc.c</file>
-         <hash>4eba2fb05ab0e6e9e31b36fd036c0e3593951dad09df59776b9c0bb458063533</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\mcc.h</file>
-         <hash>bf237287cff0eccc1d7d38c848e95a5f39d6be58f4e84ea80aee3e87d4afcd0c</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\src\cpuint.c</file>
-         <hash>ea322dfda23b0cff6a6d55c8cc3f2f87a8b763817c4f418973e80ea5e122c2a4</hash>
+         <file>mcc_generated_files\utils\atomic.h</file>
+         <hash>8247a50a620196f6cc02e70874d5de0c49c0fb49d7e2349c6a1656bc3a80f973</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\src\pin_manager.c</file>
          <hash>b7c9f98eb7f9d5bbbe656d48573c4f0d15ffc239e3e9a336a8a91cc68fbdd449</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\src\protected_io.S</file>
-         <hash>c4e49c1c9d36689251b3db613deca9e7f86416e30d48453acde5162e25b824c3</hash>
+         <file>mcc_generated_files\utils\interrupt_avr8.h</file>
+         <hash>8e2d01c05f8fd72e7e3f472fb2ecd299d2997d5a3e7749a12378f681236dbade</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\src\cpuint.c</file>
+         <hash>ea322dfda23b0cff6a6d55c8cc3f2f87a8b763817c4f418973e80ea5e122c2a4</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\include\rtc.h</file>
+         <hash>88762b5dea67966acd9121819569df0957ac4f5d42022fe1b6d8fec8c2632d71</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\examples\twi0_master_example.c</file>
+         <hash>482b5a1d210b3913393a920f55c4f07c7e59b9bffbb346c30c874af21b935eda</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\src\rtc.c</file>
-         <hash>d32ce64a63ccd5ee04b39d78876eca3d15e43e9cc253d15cfd33cdc37401338d</hash>
+         <hash>f7ec6dc42e5b5f81c3d09936352cd0cdb4c48c36126a77ad80c6362c990d49e5</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\include\ccp.h</file>
+         <hash>22e7d99bcc49431790cb3e753fb927a08cebbc39a73d856703265012658dcf65</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\include\protected_io.h</file>
+         <hash>b8dfc2e3f281d601a92170b37d8ead16a0498fdeb2c69ccd3bdeae317231a474</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\mcc.c</file>
+         <hash>532157459da6c94e70365f493c6fca56cf54e9146cc6e025792e707bab7582bd</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\src\twi0_master.c</file>
          <hash>f1b5d679b7f198c0dcaf715d56e5379db43c46d20968172a3378eb6079b24380</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\src\usart0.c</file>
-         <hash>3e9c89fd62a95259cc9ac763717752651a03bafe41475048ea5a4a9740ec456f</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\utils\assembler.h</file>
-         <hash>182aeb0f4019618657941474929333a0d6b6a8f46356da286e0768e64f3d4a90</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files\utils\assembler\gas.h</file>
-         <hash>d12ac618271fe853dc8d211491eca5ce6c744c006409b7d706fbc4d4ebb5fac6</hash>
-      </entry>
-      <entry>
          <file>mcc_generated_files\utils\assembler\iar.h</file>
          <hash>f76fac472d66ed01abc94a5c0968180dc6b5f43f691317203c169e4820ca5671</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\utils\atomic.h</file>
-         <hash>8247a50a620196f6cc02e70874d5de0c49c0fb49d7e2349c6a1656bc3a80f973</hash>
+         <file>mcc_generated_files\mcc.h</file>
+         <hash>7b90db3d7ea8b0bd6e3e51476bdce6bd491351cece737e7aaa85b0b79922bb30</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\utils\compiler.h</file>
-         <hash>40dfa79993fd23745164abbfe1df0d89cf61f961b028387e09eeaaf28553ba1b</hash>
+         <file>mcc_generated_files\include\port.h</file>
+         <hash>98e1431d21795b7fad6568d9aedbf10fa05edebfe4cdde13a188de5e094c9fb6</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files\utils\interrupt_avr8.h</file>
-         <hash>8e2d01c05f8fd72e7e3f472fb2ecd299d2997d5a3e7749a12378f681236dbade</hash>
+         <file>mcc_generated_files\src\usart0.c</file>
+         <hash>3e9c89fd62a95259cc9ac763717752651a03bafe41475048ea5a4a9740ec456f</hash>
+      </entry>
+      <entry>
+         <file>main.c</file>
+         <hash>8b76475def75f92097ff26a70d838b634e953a0dd4190952888f58b50a14684a</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\device_config.c</file>
+         <hash>778e7f9f28c85d82459889b53af18a1adfc768c0b95c13170861a0fede197461</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\utils\utils.h</file>
          <hash>b8432e8f62971dea52d994dcf1ce8535553b82034d9054899e6245c4674c31f8</hash>
       </entry>
       <entry>
+         <file>mcc_generated_files\utils\assembler.h</file>
+         <hash>182aeb0f4019618657941474929333a0d6b6a8f46356da286e0768e64f3d4a90</hash>
+      </entry>
+      <entry>
          <file>mcc_generated_files\utils\utils_assert.h</file>
          <hash>68bdf1f934b46f9a89114427e5f6b15c36f975e200f21cae1bf92b681b07de97</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\include\rstctrl.h</file>
+         <hash>c4788a51fb6dc0c5164447b3c485e2540ec3b7f29b32d3803be63153299db544</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\include\cpuint.h</file>
+         <hash>da63c787ba48433d3e811e61c16beaa5f4a59287ce249f3f4daba920f3c0181c</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\include\usart0.h</file>
+         <hash>6d6d5e78bd7873d9c7aa7ee423ac3820aa71f9bbbe02beddaee8b1c1299188c6</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\config\clock_config.h</file>
+         <hash>7b1c1e9f6c2f085d0e81028d1654d8d5fb624dbce9e9de95934dc22e440573fe</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files\utils\assembler\gas.h</file>
+         <hash>d12ac618271fe853dc8d211491eca5ce6c744c006409b7d706fbc4d4ebb5fac6</hash>
       </entry>
    </generatedFileHashHistoryMap>
 </config>
