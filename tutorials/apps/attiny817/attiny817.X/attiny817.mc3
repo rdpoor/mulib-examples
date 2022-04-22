@@ -860,7 +860,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="OUT_PB2"/>
-         <value>false</value>
+         <value>true</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="OUT_PB3"/>
@@ -2444,7 +2444,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="PORTB.OUT"/>
-         <value>0</value>
+         <value>4</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="Pin Module" registerAlias="PORTB.OUTCLR"/>
@@ -2788,7 +2788,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="PORTB.OUT" settingAlias="PORTB.OUT"/>
-         <value>0</value>
+         <value>4</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="PORTB.OUTCLR" settingAlias="PORTB.OUTCLR"/>
@@ -3252,11 +3252,11 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="PIN_TOSC1"/>
-         <value>TOSC1</value>
+         <value></value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="PIN_TOSC2"/>
-         <value>TOSC2</value>
+         <value></value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="RTC" name="Prescaler"/>
@@ -5016,7 +5016,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="USART0" name="Printf"/>
-         <value>false</value>
+         <value>true</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="USART0" name="RxBufferSize"/>
@@ -5702,7 +5702,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\src\pin_manager.c</file>
-         <hash>b7c9f98eb7f9d5bbbe656d48573c4f0d15ffc239e3e9a336a8a91cc68fbdd449</hash>
+         <hash>788394dc24ef9736c8e73b4e4dc0aed707acceeeacec96f5a2a9d7e762848844</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\utils\interrupt_avr8.h</file>
@@ -5734,7 +5734,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\mcc.c</file>
-         <hash>532157459da6c94e70365f493c6fca56cf54e9146cc6e025792e707bab7582bd</hash>
+         <hash>4eba2fb05ab0e6e9e31b36fd036c0e3593951dad09df59776b9c0bb458063533</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\src\twi0_master.c</file>
@@ -5746,7 +5746,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\mcc.h</file>
-         <hash>7b90db3d7ea8b0bd6e3e51476bdce6bd491351cece737e7aaa85b0b79922bb30</hash>
+         <hash>72371cddd85bfc6420d60e81c22cf0bd0f55e80372b1a30da50d0c42e54a5b73</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\include\port.h</file>
@@ -5754,7 +5754,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\src\usart0.c</file>
-         <hash>3e9c89fd62a95259cc9ac763717752651a03bafe41475048ea5a4a9740ec456f</hash>
+         <hash>e845544ba661ab8042c91b991e39089b6a54fa9efb5be8711f78bd339cccda15</hash>
       </entry>
       <entry>
          <file>main.c</file>

@@ -51,7 +51,7 @@ extern "C" {
 // Public types and definitions
 
 // Specific to this platform
-#define MU_TIME_CLOCK_FREQUENCY 1000
+#define MU_TIME_CLOCK_FREQUENCY 32768
 
 // Required: define a macro to convert milliseconds to mu_time_rel_t
 #define MU_TIME_MS_TO_REL(ms) \
@@ -62,15 +62,15 @@ extern "C" {
   (int)(((time) * 1000) / MU_TIME_CLOCK_FREQUENCY)
 
 // Required: define a data type to hold absolute time.
-typedef uint16_t mu_time_abs_t;
+typedef uint32_t mu_time_abs_t;
 
 // Required: define a data type to hold relative time, i.e. an interval between
 // two absolute times.  Note that this may be negative.
-typedef int16_t mu_time_rel_t;
+typedef int32_t mu_time_rel_t;
 
 // Required: define the maximum relative time.  Note that this will be used to
 // distinguish between a long time in the future and a long time in the past.
-#define MU_TIME_MAX_TIME_REL INT16_MAX
+#define MU_TIME_MAX_TIME_REL INT32_MAX
 
 // Optional: If implementing power management, the minimum time the system will
 // sleep for.

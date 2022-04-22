@@ -37,17 +37,60 @@
 // *****************************************************************************
 // Private (static) storage
 
+static volatile uint16_t s_rtc_hi;  // high order 16 bits of "synthesized" RTC
+
 // *****************************************************************************
 // Private (forward) declarations
+
+/**
+ * @brief Called at interrupt level, increment the overflow counter for the RTC.
+ * s_rtc_hi will increment once every 64K counts, i.e. every 2 seconds.  Refer
+ * to mu_time_now() to see how it's used.
+ */
+static void rtc_ovf_cb(void);
 
 // *****************************************************************************
 // Public code
 
 void mu_time_init(void) {
-  // no initialization needed.
+  s_rtc_hi = 0;
+  RTC_SetOVFIsrCallback(rtc_ovf_cb);
 }
 
-mu_time_abs_t mu_time_now(void) { return RTC_ReadCounter(); }
+// mu_time_now() deserves some explanation:
+//
+// The AVR's RTC is a 16 bit counter.  Clocked at 32867 Hz, it will roll over
+// once every 2 seconds, which is too short for many practical applications, so
+// this code synthesizes a 32 bit counter.
+//
+// Whenever the RTC rolls over, it increments s_rtc_hi at interrupt level.
+// Called at foreground level, mu_time_now() works as follows:
+// 1. It captures a snapshot of s_rtc_hi in hi.
+// 2. It captures a snapshot of the RTC 16 bit counter in lo.
+// 3. It conpares the snapshot value of hi to s_rtc_hi
+// 4. If s_rtc_hi has changed since step 1, it re-runs steps 1-4
+//
+// Commentary: copying and comparing 16 bit values is NOT atomic on an AVR
+// processor but the above code still works because, at step 4., one of two
+// conditions must be true:
+//
+// A: The expression evaluates to true: This means that the loop detected that
+// s_rtc_hi changed after the snapshot was taken, so it does another pass
+// through the loop to capture fresh snapshots.
+//
+// B: The expression evaluates to false: This means that s_rtc_hi is unchanged,
+// or (possibly) might be in the process of changing.  But we've already
+// captured snapshots for lo and hi so we don't need to re-run the loop.
+//
+mu_time_abs_t mu_time_now(void) {
+  uint16_t lo;
+  uint16_t hi;
+  do {
+    hi = s_rtc_hi;
+    lo = RTC_ReadCounter();
+  } while (hi != s_rtc_hi);
+  return ((uint32_t)(hi) << 16) | lo;
+}
 
 mu_time_abs_t mu_time_offset(mu_time_abs_t t, mu_time_rel_t dt) {
   return t + dt;
@@ -68,13 +111,16 @@ bool mu_time_follows(mu_time_abs_t t1, mu_time_abs_t t2) {
 }
 
 int mu_time_rel_to_ms(mu_time_rel_t dt) {
-  return dt;
+  return MU_TIME_REL_TO_MS(dt);
 }
 
 mu_time_rel_t mu_time_ms_to_rel(int ms) {
-  // clock freq is 1KHz
-  return ms;
+  return MU_TIME_MS_TO_REL(ms);
 }
 
 // *****************************************************************************
 // Private (static) code
+
+static void rtc_ovf_cb(void) {
+  s_rtc_hi += 1;
+}

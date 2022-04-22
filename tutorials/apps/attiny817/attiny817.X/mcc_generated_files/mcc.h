@@ -42,8 +42,8 @@ extern "C" {
 #include "include/pin_manager.h"
 #include "include/twi0_master.h"
 #include "include/usart0.h"
-#include "include/rtc.h"
 #include "include/cpuint.h"
+#include "include/rtc.h"
 #include "config/clock_config.h"
 
 /**

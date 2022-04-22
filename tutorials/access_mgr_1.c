@@ -41,8 +41,8 @@
 // *****************************************************************************
 // Private types and definitions
 
-#define TUTORIAL_INTERVAL_MS 2500
-#define RESERVE_MS 500
+#define TUTORIAL_INTERVAL_MS 5000
+#define RESERVE_MS 50
 
 #define MAX_PENDING_TASKS 2
 
@@ -138,6 +138,7 @@ static void requestor_fn(void *ctx, void *arg) {
   requestor_ctx_t *self = (requestor_ctx_t *)ctx;
   (void)arg;
 
+  printf("\n%ld: %s state %d", mu_time_now(), self->name, self->state);
   switch (self->state) {
   case REQUESTOR_STATE_IDLE: {
     // Here when the task first starts. Request access to standard output.
