@@ -3,7 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/r/Projects/mulib-examples/tutorials/mulib/core/mu_sched.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/tutorials/platforms/samd21_xpro/tutorials_bsp.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/tutorials/tutorial.h</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/tutorials/blink_4.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/tutorials/access_mgr_1.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/tutorials/apps/samd21_xpro/firmware/src/main.c</file>
+            <file>file:/C:/Users/r/Projects/mulib-examples/tutorials/platforms/samd21_xpro/tutorials_bsp.h</file>
         </group>
     </open-files>
 </project-private>

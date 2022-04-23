@@ -50,3 +50,11 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Ignoring files according to https://microchipdeveloper.com/mplabx:version-control-working-with
+**/*.X/.generated_files
+**/*.X/build
+**/*.X/dist
+**/*.X/nbproject/Makefile-*
+**/*.X/nbproject/Package-*
+**/*.X/nbproject/private

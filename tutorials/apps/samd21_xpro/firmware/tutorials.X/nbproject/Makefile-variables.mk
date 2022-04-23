@@ -20,3 +20,7 @@ CND_ARTIFACT_PATH_blink_3=dist/blink_3/production/tutorials.X.production.hex
 CND_ARTIFACT_DIR_blink_4=dist/blink_4/production
 CND_ARTIFACT_NAME_blink_4=tutorials.X.production.hex
 CND_ARTIFACT_PATH_blink_4=dist/blink_4/production/tutorials.X.production.hex
+# access_mgr_1 configuration
+CND_ARTIFACT_DIR_access_mgr_1=dist/access_mgr_1/production
+CND_ARTIFACT_NAME_access_mgr_1=tutorials.X.production.hex
+CND_ARTIFACT_PATH_access_mgr_1=dist/access_mgr_1/production/tutorials.X.production.hex

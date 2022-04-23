@@ -56,5 +56,15 @@ bool tutorials_bsp_button_is_pressed(void) {
   return SWITCH_Get() == SWITCH_STATE_PRESSED;
 }
 
+bool tutorials_bsp_kbhit(void) { return SERCOM3_USART_ReceiverIsReady(); }
+
+char tutorials_bsp_getch(void) { return SERCOM3_USART_ReadByte(); }
+
+void tutorials_bsp_puts(const char *str) {
+  while (*str) {
+    SERCOM3_USART_WriteByte(*str++);
+  }
+}
+
 // *****************************************************************************
 // Private (static) code
