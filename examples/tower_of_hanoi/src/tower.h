@@ -41,7 +41,7 @@ extern "C" {
 // *****************************************************************************
 // types and definitions
 
-#define N_DISKS 5
+#define N_DISKS 7
 #define POLE_WIDTH (2 * N_DISKS + 1)
 #define POLE_HEIGHT (N_DISKS)
 #define POLE_YPOS 0

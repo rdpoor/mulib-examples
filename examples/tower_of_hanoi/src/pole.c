@@ -27,7 +27,6 @@
 
 #include "pole.h"
 
-#include "ansi_fb.h"
 #include "disk.h"
 #include "tower.h"
 #include <stdint.h>
@@ -58,18 +57,6 @@
 void pole_init(pole_t *pole, uint8_t xpos) {
   pole->xpos = xpos;
   pole->disks = NULL;
-}
-
-void pole_draw(pole_t *pole) {
-  // draw peg
-  for (int i=0; i<POLE_HEIGHT; i++) {
-    ansi_fb_draw(pole->xpos, POLE_YPOS + i + 1, '#');
-  }
-  // draw base
-  int x_left = pole->xpos - (POLE_WIDTH/2);
-  for (int i=0; i<POLE_WIDTH; i++) {
-    ansi_fb_draw(x_left + i, 0, '#');
-  }
 }
 
 uint8_t pole_top_x(pole_t *pole) {
@@ -108,6 +95,23 @@ disk_t *pole_pop(pole_t *pole) {
 
 disk_t *pole_top(pole_t *pole) {
   return pole->disks;
+}
+
+char pole_char_at(pole_t *pole, int x, int y) {
+  int radius = POLE_WIDTH/2;
+  if (y == 0) {
+    // the base
+    if ((x < pole->xpos - radius) || (x > pole->xpos + radius)) {
+      return ' ';
+    } else {
+      return 'I';
+    }
+  } else if ((y < POLE_HEIGHT + 1) && (x == pole->xpos)) {
+    // vertical member
+    return 'I';
+  } else {
+    return ' ';
+  }
 }
 
 // *****************************************************************************

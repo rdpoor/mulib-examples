@@ -27,7 +27,6 @@
 
 #include "tower.h"
 #include "animator.h"
-#include "ansi_fb.h"
 #include "disk.h"
 #include "pole.h"
 
@@ -48,8 +47,8 @@
 #define POLE_C 2
 #define N_POLES 3
 
-#define BUFFER_WIDTH ((N_POLES * POLE_WIDTH) + N_POLES)
-#define BUFFER_HEIGHT (CRUISING_ALTITUDE)
+#define SCREEN_WIDTH ((N_POLES * POLE_WIDTH) + N_POLES)
+#define SCREEN_HEIGHT (CRUISING_ALTITUDE + 1)
 
 typedef struct {
   mu_task_t task;
@@ -61,8 +60,6 @@ typedef struct {
 
 static mu_task_t s_tower_task;
 static tower_ctx_t s_tower_ctx;
-static char s_backing_buf[BUFFER_WIDTH * BUFFER_HEIGHT];
-static char s_display_buf[BUFFER_WIDTH * BUFFER_HEIGHT];
 static disk_t s_disks[N_DISKS];
 static pole_t s_poles[N_POLES];
 
@@ -115,12 +112,9 @@ void tower_init(void) {
   mu_sched_init();
   mu_time_init();
   ansi_term_init();
-  ansi_fb_init(BUFFER_WIDTH, BUFFER_HEIGHT, s_backing_buf, s_display_buf);
-
   mu_task_init(&s_tower_task, tower_task_fn, &s_tower_ctx, "Tower");
 
   // set up tower and disk positions
-  ansi_fb_reset();
   ansi_term_show_cursor(false);
   reset();
 
@@ -131,14 +125,26 @@ void tower_init(void) {
 void tower_step(void) { mu_sched_step(); }
 
 void tower_draw(void) {
-  ansi_fb_clear();
-  for (int i = 0; i < N_POLES; i++) {
-    pole_draw(&s_poles[i]);
+  // An extreme case of trading memory for speed: no frame buffer.  For each
+  // x, y point, iterate over all the objects (disks and poles) and draw each
+  // point on the screen.
+  for (int y=0; y<SCREEN_HEIGHT; y++) {
+    ansi_term_set_cursor_position(y, 0);  // row, col
+    int y_ = SCREEN_HEIGHT - y - 1;       // flip y so y=0 is at bottom
+    for (int x=0; x<SCREEN_WIDTH; x++) {
+      char ch = ' ';   // assume x, y will be filled with a space
+      // The disks occlude the poles, so draw them first.  Stop if we get a
+      // non-blank char at x, y
+      for (int i=0; i<N_DISKS && ch == ' '; i++) {
+        ch = disk_char_at(&s_disks[i], x, y_);
+      }
+      // If the char at x, y is still blank, draw the poles.
+      for (int i=0; i<N_POLES && ch == ' '; i++) {
+        ch = pole_char_at(&s_poles[i], x, y_);
+      }
+      putchar(ch);
+    }
   }
-  for (int i = 0; i < N_DISKS; i++) {
-    disk_draw(&s_disks[i]);
-  }
-  ansi_fb_show();
 }
 
 // *****************************************************************************
@@ -149,13 +155,20 @@ static void tower_task_fn(void *ctx, void *arg) {
   (void)arg;
   bool running;
 
-  // NOTE: unless the algo has terminated, move_disk() will start the animator
-  // task, which will call back to this task upon completion.
+  // move_disk() will start the animator task, which will progressively move one
+  // disk from one pole to another.  When it completes, it will call back to
+  // this task.  If there are no more moves (running == false), this task will
+  // wait five seconds before starting all over.
   if (self->phase == 0) {
+    // Phase 0: move a disk between pole A and pole C
     running = move_disk(&s_poles[POLE_A], &s_poles[POLE_C]);
+
   } else if (self->phase == 1) {
+    // Phase 1: move a disk between pole A and pole B
     running = move_disk(&s_poles[POLE_A], &s_poles[POLE_B]);
+
   } else /* if (self->phase == 2) */ {
+    // Phase 2: move a disk between pole B and pole C
     running = move_disk(&s_poles[POLE_B], &s_poles[POLE_C]);
   }
 
@@ -167,8 +180,7 @@ static void tower_task_fn(void *ctx, void *arg) {
   }
 
   if (!running) {
-    // Algo completed.  All disks are on POLE_C.  Reset everything and restart
-    // after a short delay...
+    // Algo completed.  Delay briefly before restarting the process.
     reset();
     mu_sched_in(&s_tower_task, MU_TIME_MS_TO_REL(5000));
   }
@@ -190,6 +202,7 @@ static bool move_disk(pole_t *p1, pole_t *p2) {
 }
 
 static pole_t *find_destination_pole(pole_t *p1, pole_t *p2) {
+  // Find the topmost disk on pole 1 and pole 2
   disk_t *d1 = pole_top(p1);
   disk_t *d2 = pole_top(p2);
   if (d1 == NULL && d2 == NULL) {
@@ -208,11 +221,12 @@ static pole_t *find_destination_pole(pole_t *p1, pole_t *p2) {
 }
 
 static void move_disk_aux(pole_t *src, pole_t *dst) {
-  // Move disk from src to dst
+  // Update the internal state: move the disk on the src pole to the dst pole
   disk_t *disk = pole_pop(src);
   pole_push(dst, disk);
 
-  // Start animating the move.  call back to this task on completion.
+  // Graphically animate the move by starting the animator task.  When the
+  // animator completes the move, call back to this task.
   mu_task_t *animator =
       animator_init(disk, pole_top_x(dst), pole_top_y(dst), &s_tower_task);
   mu_sched_now(animator);
@@ -237,4 +251,5 @@ static void reset(void) {
     pole_push(pole, disk);
     disk_set_position(disk, pole_top_x(pole), pole_top_y(pole));
   }
+  ansi_term_clear_buffer();  // clear the screen
 }

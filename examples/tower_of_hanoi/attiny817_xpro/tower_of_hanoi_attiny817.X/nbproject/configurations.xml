@@ -75,7 +75,6 @@
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>../../src/animator.c</itemPath>
-        <itemPath>../../src/ansi_fb.c</itemPath>
         <itemPath>../../src/ansi_term.c</itemPath>
         <itemPath>../../src/disk.c</itemPath>
         <itemPath>../../src/pole.c</itemPath>
@@ -138,16 +137,6 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <item path="../../src/ansi_fb.c" ex="false" overriding="false">
-        <HI-TECH-COMP>
-        </HI-TECH-COMP>
-        <HI-TECH-LINK>
-        </HI-TECH-LINK>
-        <XC8-CO>
-        </XC8-CO>
-        <XC8-config-global>
-        </XC8-config-global>
-      </item>
       <EdbgTool>
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="communication.activationmode" value="nohv"/>

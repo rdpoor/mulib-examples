@@ -26,7 +26,6 @@
 // Includes
 
 #include "disk.h"
-#include "ansi_fb.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -74,11 +73,16 @@ void disk_move_y(disk_t *disk, int dy) {
   disk->ypos += dy;
 }
 
-void disk_draw(disk_t *disk) {
-  int x_left = disk->xpos - disk->width/2;
-
-  for (int i=0; i<disk->width; i++) {
-    ansi_fb_draw(x_left + i, disk->ypos, '=');
+char disk_char_at(disk_t *disk, int x, int y) {
+  if (y != disk->ypos) {
+    return ' ';
+  } else {
+    int radius = disk->width / 2;
+    if ((x < disk->xpos - radius) || (x > disk->xpos + radius)) {
+      return ' ';
+    } else {
+      return '*';
+    }
   }
 }
 

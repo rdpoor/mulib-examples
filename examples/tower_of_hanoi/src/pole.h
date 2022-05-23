@@ -31,7 +31,7 @@
  *      ==          ||
  *     ====         ||
  *    ======        ||
- *   *******=       ||
+ *   ========       ||
  *  ^^^^^^^^^^  ^^^^^^^^^^
  *
  * To create this:
@@ -76,11 +76,6 @@ typedef struct {
 void pole_init(pole_t *pole, uint8_t xpos);
 
 /**
- * Draw the pole (but not the disks).
- */
-void pole_draw(pole_t *pole);
-
-/**
  * Return the x coordinate of the top element of the pole.
  *
  * When placing a disk on the pole, this is the final x coord.
@@ -113,6 +108,11 @@ disk_t *pole_pop(pole_t *pole);
  * Return the top disk of the pole, or NULL if the pole is empty.
  */
 disk_t *pole_top(pole_t *pole);
+
+/**
+ * @brief Return a '#' char if x, y is occupied by the pole, ' ' otherwise.
+ */
+char pole_char_at(pole_t *pole, int x, int y);
 
 #ifdef __cplusplus
 }

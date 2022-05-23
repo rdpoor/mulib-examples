@@ -55,7 +55,7 @@ int putchar(int outChar)
 void USART0_Initialize()
 {
     //set baud rate register
-    USART0.BAUD = (uint16_t)USART0_BAUD_RATE(115200);
+    USART0.BAUD = (uint16_t)USART0_BAUD_RATE(460800);
 	
     //RXCIE disabled; TXCIE disabled; DREIE disabled; RXSIE disabled; LBME disabled; ABEIE disabled; RS485 OFF; 
     USART0.CTRLA = 0x00;

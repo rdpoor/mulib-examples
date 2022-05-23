@@ -67,7 +67,10 @@ void disk_move_x(disk_t *disk, int dx);
 
 void disk_move_y(disk_t *disk, int dy);
 
-void disk_draw(disk_t *disk);
+/**
+ * @brief Return an '=' symbol if the disk is visible at x, y, ' ' otherwise.
+ */
+char disk_char_at(disk_t *disk, int x, int y);
 
 #ifdef __cplusplus
 }

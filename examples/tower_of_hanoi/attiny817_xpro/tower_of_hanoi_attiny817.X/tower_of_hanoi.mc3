@@ -4256,7 +4256,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="USART0" name="BaudRate"/>
-         <value>115200</value>
+         <value>460800</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="USART0" name="CLK_PER"/>
@@ -4268,7 +4268,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="USART0" name="ErrorPer"/>
-         <value>-0.064%</value>
+         <value>-0.937%</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="USART0" name="InterruptDriven"/>
@@ -4644,7 +4644,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="USART0" registerAlias="BAUD"/>
-         <value>347</value>
+         <value>86</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="USART0" registerAlias="CTRLA"/>
@@ -5038,7 +5038,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\mcc.c</file>
-         <hash>7c3bddb118734fda435ef1e256d1b401ca8913c55399a357f3d26b5d2643c51c</hash>
+         <hash>4f611328e4b99ddb77c329b346b56b101cbcead153231f356a4f4533a5ae0fff</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\utils\assembler\iar.h</file>
@@ -5046,7 +5046,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\mcc.h</file>
-         <hash>9feb7951862fd4b9653c47d5b461748bde7b97e5dca293db3c4f703f0998cd48</hash>
+         <hash>3a28e43ee4fd7a1be8f730cd7a2055aac77ba33d871190462349e15fd7ed9464</hash>
       </entry>
       <entry>
          <file>mcc_generated_files\include\port.h</file>
@@ -5054,7 +5054,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files\src\usart0.c</file>
-         <hash>e845544ba661ab8042c91b991e39089b6a54fa9efb5be8711f78bd339cccda15</hash>
+         <hash>a22d6aa9f1bff2791d450dee7989fefcb8f866c81d161d3a696718abaebc595f</hash>
       </entry>
       <entry>
          <file>main.c</file>
