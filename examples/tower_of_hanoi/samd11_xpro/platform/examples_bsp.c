@@ -60,6 +60,8 @@ bool examples_bsp_kbhit(void) { return SERCOM2_USART_ReceiverIsReady(); }
 
 char examples_bsp_getch(void) { return SERCOM2_USART_ReadByte(); }
 
+void examples_bsp_putch(char ch) { SERCOM2_USART_WriteByte(ch); }
+
 void examples_bsp_puts(const char *str) {
   while (*str) {
     SERCOM2_USART_WriteByte(*str++);

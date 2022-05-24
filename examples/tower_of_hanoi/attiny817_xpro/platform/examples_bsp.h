@@ -22,47 +22,59 @@
  * SOFTWARE.
  */
 
+/**
+ * @file examples_bsp.h
+ *
+ * @brief Define platform-specific functions required for the mulib tutorials.
+ */
+
+#ifndef _EXAMPLES_BSP_H_
+#define _EXAMPLES_BSP_H_
+
 // *****************************************************************************
 // Includes
 
-#include "tutorials_bsp.h"
-
-#include "mcc.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 // *****************************************************************************
-// Private types and definitions
+// C++ Compatibility
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // *****************************************************************************
-// Private (static) storage
+// Public types and definitions
+
+#define examples_bsp_printf(...) printf(__VA_ARGS__)
 
 // *****************************************************************************
-// Private (forward) declarations
+// Public declarations
+
+void examples_bsp_init(void);
+
+void examples_bsp_led_on(void);
+
+void examples_bsp_led_off(void);
+
+void examples_bsp_led_toggle(void);
+
+bool examples_bsp_button_is_pressed(void);
+
+bool examples_bsp_kbhit(void);
+
+bool examples_bsp_getch(void);
+
+void examples_bsp_putch(char ch);
+
+void examples_bsp_puts(const char *str);
 
 // *****************************************************************************
-// Public code
+// End of file
 
-void tutorials_bsp_init(void) {
-  // none required
+#ifdef __cplusplus
 }
+#endif
 
-void tutorials_bsp_led_on(void) { LED_SetLow(); }
-
-void tutorials_bsp_led_off(void) { LED_SetHigh(); }
-
-void tutorials_bsp_led_toggle(void) { LED_Toggle(); }
-
-bool tutorials_bsp_button_is_pressed(void) { return SW0_GetValue() == 0; }
-
-bool tutorials_bsp_kbhit(void) { return USART0_IsRxReady(); }
-
-bool tutorials_bsp_getch(void) { return USART0_Read(); }
-
-void tutorials_bsp_puts(const char *str) {
-    while (*str) {
-        USART0_Write(*str++);
-    }
-}
-
-// *****************************************************************************
-// Private (static) code
+#endif /* #ifndef _EXAMPLES_BSP_H_ */

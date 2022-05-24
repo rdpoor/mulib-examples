@@ -68,13 +68,16 @@ typedef enum {
   ANSI_TERM_COLORS(ANSI_TERM_EXPAND_NAMES) ANSI_TERM_COLOR_COUNT
 } ansi_term_color_t;
 
+typedef void (*ansi_term_putc_fn)(char ch);
+
 // *****************************************************************************
 // declarations
 
 /**
- * @brief Initialize the ansi terminal module.
+ * @brief Initialize the ansi terminal module.  If putc_fn is non-null, use the
+ * user supplied function for writing characters, else it defaults to putc().
  */
-void ansi_term_init(void);
+void ansi_term_init(ansi_term_putc_fn fn);
 
 /**
  * @brief Standard ansi term reset

@@ -50,10 +50,18 @@ static const uint8_t s_fg_colormap[] = {ANSI_TERM_COLORS(EXPAND_FG_COLORS)};
 #define EXPAND_BG_COLORS(_name, _fg, _bg) _bg,
 static const uint8_t s_bg_colormap[] = {ANSI_TERM_COLORS(EXPAND_BG_COLORS)};
 
+static ansi_term_putc_fn s_putc_fn;
+
 // *****************************************************************************
 // Local (forward) declarations
 
 static void puts_escaped(const char *s);
+
+static void ansi_puts(const char *s);
+
+static void ansi_putc(char ch);
+
+static void default_putc(char ch);
 
 /**
  * @brief ANSI_TERM_ESC<x>;<y><suffix>
@@ -66,8 +74,10 @@ static uint8_t map_bg_color(ansi_term_color_t color);
 // *****************************************************************************
 // Public code
 
-void ansi_term_init(void) {
+void ansi_term_init(ansi_term_putc_fn fn) {
+  s_putc_fn = (fn == NULL) ? default_putc : fn;
   ansi_term_set_colors(ANSI_TERM_DEFAULT_COLOR, ANSI_TERM_DEFAULT_COLOR);
+
 }
 
 void ansi_term_reset() {
@@ -95,8 +105,6 @@ void ansi_term_set_cursor_position(uint8_t row, uint8_t col) {
   if ((row == 0) && (col == 0)) {
     ansi_term_home();
   } else {
-    // at least one vendor has a printf() that needlessly bloats the image
-    // printf(ANSI_TERM_ESC "%d;%dH", row + 1, col + 1);
     puts_xy(row+1, col+1, "H");
   }
 }
@@ -119,27 +127,27 @@ void ansi_term_terminal_bell() { puts("\a"); }
 // Local (static) code
 
 static void puts_escaped(const char *s) {
-  puts(ANSI_TERM_ESC);
-  puts(s);
+  ansi_puts(ANSI_TERM_ESC);
+  ansi_puts(s);
 }
 
 static void puts_xy(int x, int y, const char *suffix) {
-  fputs(ANSI_TERM_ESC, stdout);
+  ansi_puts(ANSI_TERM_ESC);
   print_int(x);
-  putchar(';');
+  ansi_putc(';');
   print_int(y);
-  fputs(suffix, stdout);
+  ansi_puts(suffix);
 }
 
 static void print_int(int v) {
   // Handle the special case where v == 0
   if (v == 0) {
-    putchar('0');
+    ansi_putc('0');
     return;
   }
   // Handle negative values
   if (v < 0) {
-    putchar('-');
+    ansi_putc('-');
     v = -v;
   }
   // Reverse the decimal digits in v into v2.  If v == 7890, then v2 == 0987.
@@ -153,7 +161,7 @@ static void print_int(int v) {
   }
   // Now v2 has reversed digits.  Print from least to most significant digit.
   while (n_digits-- != 0) {
-    putchar(v2 % 10 + '0');
+    ansi_putc(v2 % 10 + '0');
     v2 /= 10;
   }
 }
@@ -170,4 +178,18 @@ static uint8_t map_bg_color(ansi_term_color_t color) {
     color = ANSI_TERM_DEFAULT_COLOR;
   }
   return s_bg_colormap[color];
+}
+
+static void ansi_puts(const char *s) {
+  while (*s) {
+    ansi_putc(*s++);
+  }
+}
+
+static void ansi_putc(char ch) {
+  s_putc_fn(ch);
+}
+
+static void default_putc(char ch) {
+  fputc(ch, stdout);
 }

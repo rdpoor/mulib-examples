@@ -71,7 +71,7 @@
       </logicalFolder>
       <logicalFolder name="platform" displayName="platform" projectFiles="true">
         <itemPath>../platform/mu_time.c</itemPath>
-        <itemPath>../platform/tutorials_bsp.c</itemPath>
+        <itemPath>../platform/examples_bsp.c</itemPath>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>../../src/animator.c</itemPath>
@@ -144,7 +144,7 @@
         <property key="communication.speed" value="${communication.speed.default}"/>
         <property key="debugoptions.debug-startup" value="Use system settings"/>
         <property key="debugoptions.reset-behaviour" value="Use system settings"/>
-        <property key="debugoptions.useswbreakpoints" value="false"/>
+        <property key="debugoptions.useswbreakpoints" value="true"/>
         <property key="firmware.path"
                   value="Press to browse for a specific firmware version"/>
         <property key="firmware.toolpack"

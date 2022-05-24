@@ -1,11 +1,11 @@
 files:
-- generatedChecksum: 3C13720844166A5D97CF4EAD9DDB9FE2
+- generatedChecksum: null
   logicalPath: ''
   name: app.c
   physicalPath: ../..
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 3C13720844166A5D97CF4EAD9DDB9FE2
+  userChecksum: null
 - generatedChecksum: 1A81761E8B71DEB8D8FBEA31DBFD4738
   logicalPath: config/default/bsp
   name: bsp.c
@@ -20,13 +20,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 0D18A719A1E40A8875895284967F66D0
-- generatedChecksum: A0DA1632F002B287620314D850A33C0B
+- generatedChecksum: F8DD4C48C36189278E18231CA6EF3E30
   logicalPath: config/default
   name: initialization.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: A0DA1632F002B287620314D850A33C0B
+  userChecksum: F8DD4C48C36189278E18231CA6EF3E30
 - generatedChecksum: A6651161F6937EA91160C9BF8D4A4CE8
   logicalPath: config/default
   name: interrupts.c
@@ -41,13 +41,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 6513F2461B8F476B68CA73906086047F
-- generatedChecksum: F81A00E640818EDFB9E79C9BD241AEF4
+- generatedChecksum: null
   logicalPath: ''
   name: main.c
   physicalPath: ../..
   security: NON_SECURE
   type: SOURCE
-  userChecksum: F81A00E640818EDFB9E79C9BD241AEF4
+  userChecksum: null
 - generatedChecksum: 77BCC549EBC0379CC2C6D00651F859E3
   logicalPath: config/default/peripheral/clock
   name: plib_clock.c
@@ -90,13 +90,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 543371007EAB22F2E5A43CC52A529195
-- generatedChecksum: DCEE1147539F78408ED4A24FD8D33679
+- generatedChecksum: 84C7A151A18ECA7FF75BBE0AAC33E7A3
   logicalPath: config/default/peripheral/sercom/usart
   name: plib_sercom2_usart.c
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: DCEE1147539F78408ED4A24FD8D33679
+  userChecksum: 84C7A151A18ECA7FF75BBE0AAC33E7A3
 - generatedChecksum: 2645E564BD945DAED1424FD8D7B39330
   logicalPath: config/default
   name: startup_xc32.c
@@ -146,13 +146,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: ACD721D0D93C7F4908DE6514BEDBFE20
-- generatedChecksum: 452F7AB915EEA4B1529959D0FF80C3F7
+- generatedChecksum: null
   logicalPath: ''
   name: app.h
   physicalPath: ../..
   security: NON_SECURE
   type: HEADER
-  userChecksum: 452F7AB915EEA4B1529959D0FF80C3F7
+  userChecksum: null
 - generatedChecksum: 391E33B8FDD7C6DA18582D778E1AE64B
   logicalPath: config/default/bsp
   name: bsp.h
@@ -244,13 +244,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: FFB5569D1669F1B9755EA4E6FF9229FB
-- generatedChecksum: 9150925E7E82B946999A0B3A8DB2E640
+- generatedChecksum: BA9E8429EEC98C06EF8CE250237101C9
   logicalPath: config/default
   name: definitions.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 9150925E7E82B946999A0B3A8DB2E640
+  userChecksum: BA9E8429EEC98C06EF8CE250237101C9
 - generatedChecksum: 687144AAE1C845BFD766057C32B1BE14
   logicalPath: config/default
   name: device.h
@@ -650,13 +650,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: D01F8797A072E398CAAC51D090E91C7C
-- generatedChecksum: 4B3C3EF8A318908A22B78500515C3288
+- generatedChecksum: null
   logicalPath: config/default
   name: user.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 4B3C3EF8A318908A22B78500515C3288
+  userChecksum: null
 - generatedChecksum: 18E28662BDFDF2A85FC08D3379A698EA
   logicalPath: packs/ATSAMD11D14AM_DFP/component
   name: wdt.h

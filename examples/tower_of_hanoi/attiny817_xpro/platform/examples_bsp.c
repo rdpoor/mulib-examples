@@ -22,57 +22,51 @@
  * SOFTWARE.
  */
 
-/**
- * @file tutorials_bsp.h
- *
- * @brief Define platform-specific functions required for the mulib tutorials.
- */
-
-#ifndef _TUTORIALS_BSP_H_
-#define _TUTORIALS_BSP_H_
-
 // *****************************************************************************
 // Includes
 
+#include "examples_bsp.h"
+
+#include "mcc.h"
 #include <stdbool.h>
-#include <stdio.h>
 
 // *****************************************************************************
-// C++ Compatibility
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+// Private types and definitions
 
 // *****************************************************************************
-// Public types and definitions
-
-#define tutorials_bsp_printf(...) printf(__VA_ARGS__)
+// Private (static) storage
 
 // *****************************************************************************
-// Public declarations
-
-void tutorials_bsp_init(void);
-
-void tutorials_bsp_led_on(void);
-
-void tutorials_bsp_led_off(void);
-
-void tutorials_bsp_led_toggle(void);
-
-bool tutorials_bsp_button_is_pressed(void);
-
-bool tutorials_bsp_kbhit(void);
-
-bool tutorials_bsp_getch(void);
-
-void tutorials_bsp_puts(const char *str);
+// Private (forward) declarations
 
 // *****************************************************************************
-// End of file
+// Public code
 
-#ifdef __cplusplus
+void examples_bsp_init(void) {
+  // none required
 }
-#endif
 
-#endif /* #ifndef _TUTORIALS_BSP_H_ */
+void examples_bsp_led_on(void) { LED_SetLow(); }
+
+void examples_bsp_led_off(void) { LED_SetHigh(); }
+
+void examples_bsp_led_toggle(void) { LED_Toggle(); }
+
+bool examples_bsp_button_is_pressed(void) { return SW0_GetValue() == 0; }
+
+bool examples_bsp_kbhit(void) { return USART0_IsRxReady(); }
+
+bool examples_bsp_getch(void) { return USART0_Read(); }
+
+void examples_bsp_putch(char ch) {
+  USART0_Write(ch);
+}
+
+void examples_bsp_puts(const char *str) {
+    while (*str) {
+        USART0_Write(*str++);
+    }
+}
+
+// *****************************************************************************
+// Private (static) code

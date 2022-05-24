@@ -61,13 +61,14 @@ Therfore, the screen will be 47 * 10 = 470 pixels.
 // Includes
 
 #include "tower.h"
-#include "animator.h"
-#include "disk.h"
-#include "pole.h"
 
+#include "animator.h"
 #include "ansi_term.h"
+#include "disk.h"
 #include "mu_sched.h"
 #include "mu_task.h"
+#include "pole.h"
+#include "examples_bsp.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -83,7 +84,7 @@ Therfore, the screen will be 47 * 10 = 470 pixels.
 #define POLE_C 2
 
 #define SCREEN_WIDTH ((POLE_WIDTH  + 1) * N_POLES)
-#define SCREEN_HEIGHT (POLE_BASE_HEIGHT + POLE_HEIGHT + CRUISING_ALTITUDE)
+#define SCREEN_HEIGHT (CRUISING_ALTITUDE)
 
 typedef struct {
   mu_task_t task;
@@ -146,11 +147,10 @@ void EXAMPLE_Tasks(void) { tower_step(); }
 void tower_init(void) {
   mu_sched_init();
   mu_time_init();
-  ansi_term_init();
+  ansi_term_init(examples_bsp_putch);
   mu_task_init(&s_tower_task, tower_task_fn, &s_tower_ctx, "Tower");
 
   // set up tower and disk positions
-  // memset(s_screen_cache, '\0', sizeof(s_screen_cache));
   ansi_term_show_cursor(false);
   reset();
 
@@ -162,12 +162,10 @@ void tower_step(void) { mu_sched_step(); }
 
 void tower_draw(void) {
   // For each x, y point, iterate over all the objects (disks and poles) and
-  // to determine what character belongs at that point.  If it differs from the
-  // cached screen state, output the character and update the cache.
-  // int idx = 0;  // index into screen buffer
+  // to determine what character belongs at that point.
   for (int y=0; y<SCREEN_HEIGHT; y++) {
     int y_ = SCREEN_HEIGHT - y - 1;       // flip y so y=0 is at bottom
-    ansi_term_set_cursor_position(y, x);
+    ansi_term_set_cursor_position(y, 0);
     for (int x=0; x<SCREEN_WIDTH; x++) {
       char ch = ' ';   // assume x, y will be filled with a space
       // The disks occlude the poles, so draw them first.  Stop if we get a
@@ -179,12 +177,7 @@ void tower_draw(void) {
       for (int i=0; i<N_POLES && ch == ' '; i++) {
         ch = pole_char_at(&s_poles[i], x, y_);
       }
-      if (true /* s_screen_cache[idx] != ch */) {
-        ansi_term_set_cursor_position(y, x);  // row, col
-        putchar(ch);
-        // s_screen_cache[idx] = ch;
-      }
-      // idx += 1;
+      examples_bsp_putch(ch);
     }
   }
 }
@@ -293,5 +286,6 @@ static void reset(void) {
     pole_push(pole, disk);
     disk_set_position(disk, pole_top_x(pole), pole_top_y(pole));
   }
+  ansi_term_home();
   ansi_term_clear_buffer();  // clear the screen
 }

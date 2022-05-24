@@ -199,7 +199,6 @@
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>../../../src/animator.c</itemPath>
-        <itemPath>../../../src/ansi_fb.c</itemPath>
         <itemPath>../../../src/ansi_term.c</itemPath>
         <itemPath>../../../src/disk.c</itemPath>
         <itemPath>../../../src/pole.c</itemPath>
@@ -280,22 +279,6 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
-      <item path="../../../src/ansi_fb.c" ex="false" overriding="false">
-        <C32>
-        </C32>
-        <C32-AR>
-        </C32-AR>
-        <C32-AS>
-        </C32-AS>
-        <C32-CO>
-        </C32-CO>
-        <C32-LD>
-        </C32-LD>
-        <C32CPP>
-        </C32CPP>
-        <C32Global>
-        </C32Global>
-      </item>
       <AtmelIceTool>
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="communication.interface" value="swd"/>

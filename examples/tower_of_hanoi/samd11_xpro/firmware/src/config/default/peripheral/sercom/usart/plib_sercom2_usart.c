@@ -58,8 +58,8 @@
 // *****************************************************************************
 
 
-/* SERCOM2 USART baud value for 115200 Hz baud rate */
-#define SERCOM2_USART_INT_BAUD_VALUE            (63019UL)
+/* SERCOM2 USART baud value for 460800 Hz baud rate */
+#define SERCOM2_USART_INT_BAUD_VALUE            (55469UL)
 
 
 // *****************************************************************************

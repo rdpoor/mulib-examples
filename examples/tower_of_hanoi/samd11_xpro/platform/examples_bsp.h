@@ -66,6 +66,8 @@ bool examples_bsp_kbhit(void);
 
 char examples_bsp_getch(void);
 
+void examples_bsp_putch(char ch);
+
 void examples_bsp_puts(const char *str);
 
 // *****************************************************************************

@@ -73,12 +73,19 @@ children:
       - type: Dynamic
         attributes: {id: sercom2, value: '&(SERCOM2_REGS->USART_INT.SERCOM_DATA)'}
   - type: Integer
+    attributes: {id: USART_BAUD_RATE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '460800'}
+  - type: Integer
     attributes: {id: USART_BAUD_VALUE}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: sercom2, value: '63019'}
+        attributes: {id: sercom2, value: '55469'}
   - type: KeyValueSet
     attributes: {id: USART_FORM}
     children:
@@ -108,7 +115,7 @@ children:
       - type: Boolean
         attributes: {id: readOnly}
         children:
-        - {type: Value, value: 'true'}
+        - {type: Value, value: 'false'}
     - type: Values
       children:
       - type: Dynamic
