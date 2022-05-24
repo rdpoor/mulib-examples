@@ -161,6 +161,7 @@ void tower_init(void) {
 void tower_step(void) { mu_sched_step(); }
 
 void tower_draw(void) {
+  ansi_term_show_cursor(false);  // in case the screen gets reset externally
   // For each x, y point, iterate over all the objects (disks and poles) and
   // to determine what character belongs at that point.
   for (int y=0; y<SCREEN_HEIGHT; y++) {
@@ -288,4 +289,5 @@ static void reset(void) {
   }
   ansi_term_home();
   ansi_term_clear_buffer();  // clear the screen
+
 }
