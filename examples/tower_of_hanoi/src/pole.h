@@ -22,28 +22,6 @@
  * SOFTWARE.
  */
 
-/**
- * @file gfx.h
- *
- * Use these functions to paint into a frame buffer to create ASCII images like
- * this (showing two poles and four disks):
- *
- *      ==          ||
- *     ====         ||
- *    ======        ||
- *   ========       ||
- *  ^^^^^^^^^^  ^^^^^^^^^^
- *
- * To create this:
- *
- * gfx_draw_pole(fb, 0, 0, 4);    // [0,0] is upper left hand corner,
- * gfx_draw_pole(fb, 12, 0, 4);   // y increases downwards
- * gfx_draw_disk(fb, 1, 3, 8);     // bottom disk
- * gfx_draw_idsk(fb, 2, 2, 6);
- * gfx_draw_disk(fb, 3, 1, 4);
- * gfx_draw_disk(fb, 4, 0, 2);     // top disk
- */
-
 #ifndef POLE_H_
 #define POLE_H_
 

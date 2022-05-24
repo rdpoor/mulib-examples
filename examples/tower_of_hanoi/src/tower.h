@@ -41,11 +41,14 @@ extern "C" {
 // *****************************************************************************
 // types and definitions
 
-#define N_DISKS 7
+#define N_DISKS 3
+#define N_POLES 3
+
 #define POLE_WIDTH (2 * N_DISKS + 1)
 #define POLE_HEIGHT (N_DISKS)
+#define POLE_BASE_HEIGHT 1
 #define POLE_YPOS 0
-#define CRUISING_ALTITUDE (POLE_HEIGHT + 3)
+#define CRUISING_ALTITUDE (POLE_HEIGHT + POLE_BASE_HEIGHT + 2)
 
 // *****************************************************************************
 // declarations

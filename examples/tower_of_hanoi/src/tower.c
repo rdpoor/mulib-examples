@@ -22,6 +22,41 @@
  * SOFTWARE.
  */
 
+/**
+This app visually solves the Tower of Hanoi puzzle.  It consists of three rods
+and a number of disks of various diameters, which can slide onto any rod. The
+puzzle begins with the disks stacked on one rod in order of decreasing size,
+the smallest at the top, thus approximating a conical shape. The objective of
+the puzzle is to move the entire stack to the last rod, obeying the following
+rules:
+
+* Only one disk may be moved at a time.
+* Each move consists of taking the upper disk from one of the stacks and placing
+  it on top of another stack or on an empty rod.
+* No disk may be placed on top of a disk that is smaller than it.
+
+The minimal number of moves required to solve the puzzle is 2n − 1, where n is
+the number of disks.
+
+Implementation notes:
+
+A satisfactory maximum puzzle size is N = 7.  The disk widths range from 1 pixel
+wide at the most narrow to 13 (2N - 1) at the widest.  From this, we can compute
+the size of the screen buffer as follows:
+
+POST_WIDTH = 2N + 1           // post base is 2 units wider than the widest disk
+SCREEN_WID = 3 * POST_WID + 2 // 3 posts, one space between each one
+           = 6N + 3 + 2
+           = 47
+
+The screen height is N + 1 + 2 // one row for each disk + base + "crusing space"
+for animating the movement:
+SCREEN_HEIGHT = N + 1 + 2
+              = 10
+
+Therfore, the screen will be 47 * 10 = 470 pixels.
+*/
+
 // *****************************************************************************
 // Includes
 
@@ -38,6 +73,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // *****************************************************************************
 // Local types and definitions
@@ -45,10 +81,9 @@
 #define POLE_A 0
 #define POLE_B 1
 #define POLE_C 2
-#define N_POLES 3
 
-#define SCREEN_WIDTH ((N_POLES * POLE_WIDTH) + N_POLES)
-#define SCREEN_HEIGHT (CRUISING_ALTITUDE + 1)
+#define SCREEN_WIDTH ((POLE_WIDTH  + 1) * N_POLES)
+#define SCREEN_HEIGHT (POLE_BASE_HEIGHT + POLE_HEIGHT + CRUISING_ALTITUDE)
 
 typedef struct {
   mu_task_t task;
@@ -60,6 +95,7 @@ typedef struct {
 
 static mu_task_t s_tower_task;
 static tower_ctx_t s_tower_ctx;
+static char s_screen_cache[SCREEN_WIDTH * SCREEN_HEIGHT];
 static disk_t s_disks[N_DISKS];
 static pole_t s_poles[N_POLES];
 
@@ -115,6 +151,7 @@ void tower_init(void) {
   mu_task_init(&s_tower_task, tower_task_fn, &s_tower_ctx, "Tower");
 
   // set up tower and disk positions
+  memset(s_screen_cache, '\0', sizeof(s_screen_cache));
   ansi_term_show_cursor(false);
   reset();
 
@@ -125,11 +162,11 @@ void tower_init(void) {
 void tower_step(void) { mu_sched_step(); }
 
 void tower_draw(void) {
-  // An extreme case of trading memory for speed: no frame buffer.  For each
-  // x, y point, iterate over all the objects (disks and poles) and draw each
-  // point on the screen.
+  // For each x, y point, iterate over all the objects (disks and poles) and
+  // to determine what character belongs at that point.  If it differs from the
+  // cached screen state, output the character and update the cache.
+  int idx = 0;  // index into screen buffer
   for (int y=0; y<SCREEN_HEIGHT; y++) {
-    ansi_term_set_cursor_position(y, 0);  // row, col
     int y_ = SCREEN_HEIGHT - y - 1;       // flip y so y=0 is at bottom
     for (int x=0; x<SCREEN_WIDTH; x++) {
       char ch = ' ';   // assume x, y will be filled with a space
@@ -142,7 +179,12 @@ void tower_draw(void) {
       for (int i=0; i<N_POLES && ch == ' '; i++) {
         ch = pole_char_at(&s_poles[i], x, y_);
       }
-      putchar(ch);
+      if (s_screen_cache[idx] != ch) {
+        ansi_term_set_cursor_position(y, x);  // row, col
+        putchar(ch);
+        s_screen_cache[idx] = ch;
+      }
+      idx += 1;
     }
   }
 }
