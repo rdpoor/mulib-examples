@@ -95,7 +95,6 @@ typedef struct {
 
 static mu_task_t s_tower_task;
 static tower_ctx_t s_tower_ctx;
-static char s_screen_cache[SCREEN_WIDTH * SCREEN_HEIGHT];
 static disk_t s_disks[N_DISKS];
 static pole_t s_poles[N_POLES];
 
@@ -151,7 +150,7 @@ void tower_init(void) {
   mu_task_init(&s_tower_task, tower_task_fn, &s_tower_ctx, "Tower");
 
   // set up tower and disk positions
-  memset(s_screen_cache, '\0', sizeof(s_screen_cache));
+  // memset(s_screen_cache, '\0', sizeof(s_screen_cache));
   ansi_term_show_cursor(false);
   reset();
 
@@ -165,9 +164,10 @@ void tower_draw(void) {
   // For each x, y point, iterate over all the objects (disks and poles) and
   // to determine what character belongs at that point.  If it differs from the
   // cached screen state, output the character and update the cache.
-  int idx = 0;  // index into screen buffer
+  // int idx = 0;  // index into screen buffer
   for (int y=0; y<SCREEN_HEIGHT; y++) {
     int y_ = SCREEN_HEIGHT - y - 1;       // flip y so y=0 is at bottom
+    ansi_term_set_cursor_position(y, x);
     for (int x=0; x<SCREEN_WIDTH; x++) {
       char ch = ' ';   // assume x, y will be filled with a space
       // The disks occlude the poles, so draw them first.  Stop if we get a
@@ -179,12 +179,12 @@ void tower_draw(void) {
       for (int i=0; i<N_POLES && ch == ' '; i++) {
         ch = pole_char_at(&s_poles[i], x, y_);
       }
-      if (s_screen_cache[idx] != ch) {
+      if (true /* s_screen_cache[idx] != ch */) {
         ansi_term_set_cursor_position(y, x);  // row, col
         putchar(ch);
-        s_screen_cache[idx] = ch;
+        // s_screen_cache[idx] = ch;
       }
-      idx += 1;
+      // idx += 1;
     }
   }
 }
