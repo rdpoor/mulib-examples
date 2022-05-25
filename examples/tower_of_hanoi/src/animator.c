@@ -90,6 +90,9 @@ mu_task_t *animator_init(disk_t *disk,
 static void animator_task_fn(void *ctx, void *arg) {
   animator_ctx_t *self = (animator_ctx_t *)ctx;
   (void)arg;  // unused
+  int prev_y, curr_y;
+
+  prev_y = disk_get_ypos(self->disk);
 
   switch(self->state) {
     case MOVING_UP: {
@@ -126,8 +129,13 @@ static void animator_task_fn(void *ctx, void *arg) {
     } break;
   }
 
-  // repaint the screen
-  tower_draw();
+  curr_y = disk_get_ypos(self->disk);
+
+  // redraw only those rows that have changed.
+  tower_draw_y(curr_y);
+  if (prev_y != curr_y) {
+    tower_draw_y(prev_y);
+  }
 
   if (self->state != ARRIVED) {
     // keep on moving until disk has arrived at its destination

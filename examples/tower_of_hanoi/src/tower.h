@@ -41,7 +41,7 @@ extern "C" {
 // *****************************************************************************
 // types and definitions
 
-#define N_DISKS 5
+#define N_DISKS 8
 #define N_POLES 3
 
 #define POLE_WIDTH (2 * N_DISKS + 1)
@@ -62,6 +62,8 @@ void tower_init(void);
 void tower_step(void);
 
 void tower_draw(void);
+
+void tower_draw_y(int y);
 
 #ifdef __cplusplus
 }

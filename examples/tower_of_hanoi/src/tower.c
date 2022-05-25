@@ -86,6 +86,13 @@ Therfore, the screen will be 47 * 10 = 470 pixels.
 #define SCREEN_WIDTH ((POLE_WIDTH  + 1) * N_POLES)
 #define SCREEN_HEIGHT (CRUISING_ALTITUDE)
 
+typedef enum {
+    PHASE_INIT,
+            PHASE_A,
+            PHASE_B,
+            PHASE_C,
+} phase_t;
+
 typedef struct {
   mu_task_t task;
   uint8_t phase;
@@ -137,6 +144,11 @@ static void move_disk_aux(pole_t *src, pole_t *dst);
  */
 static void reset(void);
 
+/**
+ * @brief Redraw the entire screen.
+ */
+static void redraw_screen(void);
+
 // *****************************************************************************
 // Public code
 
@@ -150,36 +162,27 @@ void tower_init(void) {
   ansi_term_init(examples_bsp_putch);
   mu_task_init(&s_tower_task, tower_task_fn, &s_tower_ctx, "Tower");
 
-  // set up tower and disk positions
-  ansi_term_show_cursor(false);
-  reset();
-
-  // Schedule the task.
+  s_tower_ctx.phase = PHASE_INIT;
   mu_sched_now(&s_tower_task);
 }
 
 void tower_step(void) { mu_sched_step(); }
 
-void tower_draw(void) {
-  ansi_term_show_cursor(false);  // in case the screen gets reset externally
-  // For each x, y point, iterate over all the objects (disks and poles) and
-  // to determine what character belongs at that point.
-  for (int y=0; y<SCREEN_HEIGHT; y++) {
-    int y_ = SCREEN_HEIGHT - y - 1;       // flip y so y=0 is at bottom
-    ansi_term_set_cursor_position(y, 0);
-    for (int x=0; x<SCREEN_WIDTH; x++) {
-      char ch = ' ';   // assume x, y will be filled with a space
-      // The disks occlude the poles, so draw them first.  Stop if we get a
-      // non-blank char at x, y
-      for (int i=0; i<N_DISKS && ch == ' '; i++) {
-        ch = disk_char_at(&s_disks[i], x, y_);
-      }
-      // If the char at x, y is still blank, draw the poles.
-      for (int i=0; i<N_POLES && ch == ' '; i++) {
-        ch = pole_char_at(&s_poles[i], x, y_);
-      }
-      examples_bsp_putch(ch);
+void tower_draw_y(int y) {
+  int row = SCREEN_HEIGHT - y - 1;
+  ansi_term_set_cursor_position(row, 0);
+  for (int x=0; x<SCREEN_WIDTH; x++) {
+    char ch = ' ';   // assume x, y will be filled with a space
+    // The disks occlude the poles, so draw them first.  Stop if we get a
+    // non-blank char at x, y
+    for (int i=0; i<N_DISKS && ch == ' '; i++) {
+      ch = disk_char_at(&s_disks[i], x, y);
     }
+    // If the char at x, y is still blank, draw the poles.
+    for (int i=0; i<N_POLES && ch == ' '; i++) {
+      ch = pole_char_at(&s_poles[i], x, y);
+    }
+    examples_bsp_putch(ch);
   }
 }
 
@@ -191,34 +194,36 @@ static void tower_task_fn(void *ctx, void *arg) {
   (void)arg;
   bool running;
 
+  if (self->phase == PHASE_INIT) {
+      reset();
+      self->phase = PHASE_A;
+  }
+  
   // move_disk() will start the animator task, which will progressively move one
   // disk from one pole to another.  When it completes, it will call back to
   // this task.  If there are no more moves (running == false), this task will
   // wait five seconds before starting all over.
-  if (self->phase == 0) {
-    // Phase 0: move a disk between pole A and pole C
-    running = move_disk(&s_poles[POLE_A], &s_poles[POLE_C]);
 
-  } else if (self->phase == 1) {
-    // Phase 1: move a disk between pole A and pole B
+  if (self->phase == PHASE_A) {
+    // Phase A: move a disk between pole A and pole C
+    running = move_disk(&s_poles[POLE_A], &s_poles[POLE_C]);
+    self->phase = PHASE_B;
+
+  } else if (self->phase == PHASE_B) {
+    // Phase B: move a disk between pole A and pole B
     running = move_disk(&s_poles[POLE_A], &s_poles[POLE_B]);
+    self->phase = PHASE_C;
 
   } else /* if (self->phase == 2) */ {
-    // Phase 2: move a disk between pole B and pole C
+    // Phase C: move a disk between pole B and pole C
     running = move_disk(&s_poles[POLE_B], &s_poles[POLE_C]);
-  }
-
-  // increment phase
-  if (self->phase < 2) {
-    self->phase += 1;
-  } else {
-    self->phase = 0;
+    self->phase = PHASE_A;
   }
 
   if (!running) {
     // Algo completed.  Delay briefly before restarting the process.
-    reset();
     mu_sched_in(&s_tower_task, MU_TIME_MS_TO_REL(5000));
+    self->phase = PHASE_INIT;  
   }
 }
 
@@ -269,8 +274,6 @@ static void move_disk_aux(pole_t *src, pole_t *dst) {
 }
 
 static void reset(void) {
-  s_tower_ctx.phase = 0;
-
   // Initialize all poles
   for (int i = 0; i < N_POLES; i++) {
     uint8_t xpos = i * (POLE_WIDTH + 1) + POLE_WIDTH / 2 + 1;
@@ -287,7 +290,18 @@ static void reset(void) {
     pole_push(pole, disk);
     disk_set_position(disk, pole_top_x(pole), pole_top_y(pole));
   }
+
+  // redraw screen from scratch
   ansi_term_home();
   ansi_term_clear_buffer();  // clear the screen
-
+  ansi_term_show_cursor(false);
+  redraw_screen();
 }
+
+static void redraw_screen(void) {
+  for (int row=0; row<SCREEN_HEIGHT; row++) {
+    int y = SCREEN_HEIGHT - row - 1;
+    tower_draw_y(y);
+  }
+}
+
