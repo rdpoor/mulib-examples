@@ -102,7 +102,7 @@ void mu_stdbsp_set_alarm(mu_time_t at);
 /**
  * @brief Unset any alarm.
  */
-void mu_stdbsp_clear_alarm(mu_time_t at);
+void mu_stdbsp_clear_alarm(mu_time_abs_t at);
 
 /**
  * @brief Put the processor into a low-power mode, waking on an external
