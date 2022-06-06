@@ -74,10 +74,20 @@ void mu_stdbsp_led_toggle(void);
 bool mu_stdbsp_button_is_pressed(void);
 
 /**
- * @brief Return true if the next call to `mu_stdbsp_serial_tx_char()` will not
+ * @brief Return true if the next call to `mu_stdbsp_serial_tx_byte()` will not
  * block.
  */
 bool mu_stdbsp_serial_tx_is_ready(void);
+
+/**
+ * @brief Return true if the serial transmitter is idle.
+ *
+ * This is different from mu_stdbsp_serial_tx_is_ready(), which tells you if
+ * the serial transmitter is ready to accept another byte.  By contrast, this
+ * function is useful for determining if it is safe to shut down the transmitter
+ * without losing a byte.
+ */
+bool mu_stbsp_serial_tx_is_idle(void);
 
 /**
  * @brief Transmit a byte over the "standard serial" line.  Note that this may
@@ -85,10 +95,10 @@ bool mu_stdbsp_serial_tx_is_ready(void);
  *
  * @return true on success, false on any kind of failure.
  */
-bool mu_stdbsp_serial_tx_char(uint8_t char);
+bool mu_stdbsp_serial_tx_byte(uint8_t ch);
 
 /**
- * @brief Return true if the next call to `mu_stdbsp_serial_rx_char()` will not
+ * @brief Return true if the next call to `mu_stdbsp_serial_rx_byte()` will not
  * block.
  */
 bool mu_stdbsp_serial_rx_is_ready(void);
@@ -99,7 +109,7 @@ bool mu_stdbsp_serial_rx_is_ready(void);
  *
  * @return true on success, false on any kind of failure.
  */
-bool mu_stdbsp_serial_rx_char(uint8_t *char);
+bool mu_stdbsp_serial_rx_byte(uint8_t *ch);
 
 
 #ifdef INCLUDE_HIGHER_LEVEL_MULIB_FUNCTIONS

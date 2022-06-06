@@ -35,6 +35,8 @@ unit testing.  Rather, they depend upon user interactions for verification.
 
 #include "test_stdbsp.h"
 
+#include "mu_stdbsp.h"
+#include "mu_time.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -44,12 +46,13 @@ unit testing.  Rather, they depend upon user interactions for verification.
 
 #define STATE_DEFINITIONS(M)                                                   \
   M(TEST_STDBSP_STATE_INIT)                                                    \
-  M(TEST_STDBSP_STATE_INIT)                                                    \
+  M(TEST_STDBSP_STATE_LED_HELP)                                                \
   M(TEST_STDBSP_STATE_LED_TEST)                                                \
   M(TEST_STDBSP_STATE_BUTTON_HELP)                                             \
   M(TEST_STDBSP_STATE_BUTTON_TEST)                                             \
   M(TEST_STDBSP_STATE_TIME_HELP)                                               \
-  M(TEST_STDBSP_STATE_TIME_TEST)
+  M(TEST_STDBSP_STATE_TIME_TEST)                                               \
+  M(TEST_STDBSP_STATE_ERR)
 
 #define EXPAND_STATES(_name) _name,
 typedef enum {STATE_DEFINITIONS(EXPAND_STATES) } test_stdbsp_state_t;
@@ -96,13 +99,13 @@ void test_stdbsp_step(void) {
   } break;
 
   case TEST_STDBSP_STATE_LED_TEST: {
-    char ch;
+    uint8_t ch;
     test_putstr("\ncmd: ");
-    if (!mu_stdbsp_serial_rx_char(&ch)) {
-      test_putstr("\nmu_stdbsp_serial_rx_char() failed -- quitting");
+    if (!mu_stdbsp_serial_rx_byte(&ch)) {
+      test_putstr("\nmu_stdbsp_serial_rx_byte() failed -- quitting");
       s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_ERR;
     } else {
-      mu_stdbsp_serial_tx_char(ch); // echo char
+      mu_stdbsp_serial_tx_byte(ch); // echo char
       switch (ch) {
       case '0': {
         mu_stdbsp_led_off();
@@ -114,11 +117,11 @@ void test_stdbsp_step(void) {
         mu_stdbsp_led_toggle();
       } break;
       case ' ': {
-        s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_TEST;
+        s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_HELP;
       } break;
       default: {
         test_putstr("\nUnrecognized command '");
-        mu_stdbsp_serial_tx_char(ch);
+        mu_stdbsp_serial_tx_byte(ch);
         test_putstr("'");
         s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_HELP;
       }
@@ -151,18 +154,22 @@ void test_stdbsp_step(void) {
   } break;
 
   case TEST_STDBSP_STATE_TIME_TEST: {
-    mu_time_abs_t now = mu_time_now();
+     mu_time_abs_t now = mu_time_now();
     if (user_typed_space()) {
       s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_INIT;
     } else if (!mu_time_precedes(now, s_test_stdbsp_ctx.time_at)) {
       // time has elapsed...
       mu_stdbsp_led_toggle();
-      mu_stdbsp_serial_tx_char('\n');
+      mu_stdbsp_serial_tx_byte('\n');
       print_int(now);
       s_test_stdbsp_ctx.time_at =
           mu_time_offset(s_test_stdbsp_ctx.time_at, MU_TIME_MS_TO_REL(1000));
       // remain in this state...
     }
+  } break;
+
+  case TEST_STDBSP_STATE_ERR: {
+    // should not normally arrive here.
   } break;
 
   } // switch
@@ -173,18 +180,18 @@ void test_stdbsp_step(void) {
 
 static void test_putstr(const char *str) {
   while (*str) {
-    mu_stdbsp_serial_tx_char(*str++);
+    mu_stdbsp_serial_tx_byte((uint8_t)*str++);
   }
 }
 
 static bool user_typed_space(void) {
-  char ch;
+  uint8_t ch;
 
   if (!mu_stdbsp_serial_rx_is_ready()) {
     // no key typed: return false
     return false;
 
-  } else if (!mu_stdbsp_serial_rx_char(&ch)) {
+  } else if (!mu_stdbsp_serial_rx_byte(&ch)) {
     // some rx error: return false
     return false;
 
@@ -201,12 +208,12 @@ static bool user_typed_space(void) {
 static void print_int(int v) {
   // Handle the special case where v == 0
   if (v == 0) {
-    mu_stdbsp_serial_tx_char('0');
+    mu_stdbsp_serial_tx_byte('0');
     return;
   }
   // Handle negative values
   if (v < 0) {
-    mu_stdbsp_serial_tx_char('-');
+    mu_stdbsp_serial_tx_byte('-');
     v = -v;
   }
   // Reverse the decimal digits in v into v2.  If v == 7890, then v2 == 0987.
@@ -220,7 +227,7 @@ static void print_int(int v) {
   }
   // Now v2 has reversed digits.  Print from least to most significant digit.
   while (n_digits-- != 0) {
-    mu_stdbsp_serial_tx_char(v2 % 10 + '0');
+    mu_stdbsp_serial_tx_byte(v2 % 10 + '0');
     v2 /= 10;
   }
 }
