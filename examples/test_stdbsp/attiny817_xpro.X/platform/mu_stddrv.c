@@ -25,9 +25,8 @@
 // *****************************************************************************
 // Includes
 
-#include "mu_stdbsp.h"
+#include "mu_stddrv.h"
 
-#include "mcc.h"
 #include <stdbool.h>
 
 // *****************************************************************************
@@ -42,32 +41,24 @@
 // *****************************************************************************
 // Public code
 
-void mu_stdbsp_init(void) {
-  // none required
+void mu_stddrv_init(void) {
 }
 
-void mu_stdbsp_led_on(void) { LED_SetLow(); }
+void mu_stddrv_register_button_task(mu_task_t *on_change) {
+}
 
-void mu_stdbsp_led_off(void) { LED_SetHigh(); }
+mu_stddrv_err_t mu_stddrv_serial_tx(mu_str_t *txbuf, mu_task_t *on_completion) {
+  return MU_STDDRV_ERR_NONE;
+}
 
-void mu_stdbsp_led_toggle(void) { LED_Toggle(); }
+mu_stddrv_err_t mu_stddrv_serial_rx(mu_str_t *rxbuf, mu_task_t *on_reception) {
+  return MU_STDDRV_ERR_NONE;
+}
 
-bool mu_stdbsp_button_is_pressed(void) { return SW0_GetValue() == 0; }
+void mu_stddrv_set_alarm(mu_time_abs_t at, mu_task_t *on_expiration) {
+}
 
-bool mu_stdbsp_serial_tx_is_ready(void) { return USART0_IsTxReady(); }
-
-bool mu_stbsp_serial_tx_is_idle(void) { return USART0_IsTxDone(); }
-
-bool mu_stdbsp_serial_tx_byte(uint8_t ch) { USART0_Write(ch);  return true; }
-
-bool mu_stdbsp_serial_rx_is_ready(void) { return USART0_IsRxReady(); }
-
-bool mu_stdbsp_serial_rx_byte(void) { return USART0_Read(); }
-
-void mu_stdbsp_puts(const char *str) {
-    while (*str) {
-        USART0_Write(*str++);
-    }
+void mu_stddrv_sleep(mu_task_t *on_wake) {
 }
 
 // *****************************************************************************

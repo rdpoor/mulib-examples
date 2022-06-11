@@ -27,7 +27,7 @@
 
 #include "mu_stdbsp.h"
 
-#include "mcc.h"
+#include "definitions.h"
 #include <stdbool.h>
 
 // *****************************************************************************
@@ -43,31 +43,43 @@
 // Public code
 
 void mu_stdbsp_init(void) {
-  // none required
+  RTC_Timer32Start();
+  mu_stdbsp_led_off();
 }
 
-void mu_stdbsp_led_on(void) { LED_SetLow(); }
+void mu_stdbsp_led_on(void) { LED_On(); }
 
-void mu_stdbsp_led_off(void) { LED_SetHigh(); }
+void mu_stdbsp_led_off(void) { LED_Off(); }
 
 void mu_stdbsp_led_toggle(void) { LED_Toggle(); }
 
-bool mu_stdbsp_button_is_pressed(void) { return SW0_GetValue() == 0; }
+bool mu_stdbsp_button_is_pressed(void) {
+  return SWITCH_Get() == SWITCH_STATE_PRESSED;
+}
 
-bool mu_stdbsp_serial_tx_is_ready(void) { return USART0_IsTxReady(); }
+bool mu_stdbsp_serial_tx_is_ready(void) {
+  return SERCOM2_USART_TransmitterIsReady();
+}
 
-bool mu_stbsp_serial_tx_is_idle(void) { return USART0_IsTxDone(); }
+bool mu_stbsp_serial_tx_is_idle(void) {
+  return SERCOM2_USART_TransmitComplete();
+}
 
-bool mu_stdbsp_serial_tx_byte(uint8_t ch) { USART0_Write(ch);  return true; }
+bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
+  SERCOM2_USART_WriteByte(ch);
+  return true;
+}
 
-bool mu_stdbsp_serial_rx_is_ready(void) { return USART0_IsRxReady(); }
+bool mu_stdbsp_serial_rx_is_ready(void) {
+  return SERCOM2_USART_ReceiverIsReady();
+}
 
-bool mu_stdbsp_serial_rx_byte(void) { return USART0_Read(); }
-
-void mu_stdbsp_puts(const char *str) {
-    while (*str) {
-        USART0_Write(*str++);
-    }
+bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
+  while (!SERCOM2_USART_ReceiverIsReady()) {
+    asm("nop");
+  }
+  *ch = SERCOM2_USART_ReadByte();
+  return true;
 }
 
 // *****************************************************************************

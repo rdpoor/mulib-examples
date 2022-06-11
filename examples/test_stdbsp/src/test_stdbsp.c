@@ -40,6 +40,7 @@ unit testing.  Rather, they depend upon user interactions for verification.
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 // *****************************************************************************
 // Private types and definitions
@@ -70,11 +71,9 @@ static test_stdbsp_ctx_t s_test_stdbsp_ctx;
 // *****************************************************************************
 // Private (forward) declarations
 
-static void test_putstr(const char *str);
-
 static bool user_typed_space(void);
 
-static void print_int(int n);
+static void print_int(uint32_t v);
 
 // *****************************************************************************
 // Public code
@@ -87,22 +86,22 @@ void test_stdbsp_init(void) {
 void test_stdbsp_step(void) {
   switch (s_test_stdbsp_ctx.state) {
   case TEST_STDBSP_STATE_INIT: {
-    test_putstr("\n##########"
-                "\ntest_stdbsp: exercise the mu_stdbsp API");
+    mu_stdbsp_puts("\n##########"
+                   "\ntest_stdbsp: exercise the mu_stdbsp API");
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_HELP;
   } break;
 
   case TEST_STDBSP_STATE_LED_HELP: {
-    test_putstr("\nType 0 to turn off LED, 1 to turn on, 2 to toggle, "
+    mu_stdbsp_puts("\nType 0 to turn off LED, 1 to turn on, 2 to toggle, "
                 "<space> to advance to next test.");
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_TEST;
   } break;
 
   case TEST_STDBSP_STATE_LED_TEST: {
     uint8_t ch;
-    test_putstr("\ncmd: ");
+    mu_stdbsp_puts("\ncmd: ");
     if (!mu_stdbsp_serial_rx_byte(&ch)) {
-      test_putstr("\nmu_stdbsp_serial_rx_byte() failed -- quitting");
+      mu_stdbsp_puts("\nmu_stdbsp_serial_rx_byte() failed -- quitting");
       s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_ERR;
     } else {
       mu_stdbsp_serial_tx_byte(ch); // echo char
@@ -120,9 +119,9 @@ void test_stdbsp_step(void) {
         s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_HELP;
       } break;
       default: {
-        test_putstr("\nUnrecognized command '");
+        mu_stdbsp_puts("\nUnrecognized command '");
         mu_stdbsp_serial_tx_byte(ch);
-        test_putstr("'");
+        mu_stdbsp_puts("'");
         s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_HELP;
       }
       }
@@ -130,7 +129,7 @@ void test_stdbsp_step(void) {
   } break;
 
   case TEST_STDBSP_STATE_BUTTON_HELP: {
-    test_putstr("\nPress button to turn on LED, release button to turn off, "
+    mu_stdbsp_puts("\nPress button to turn on LED, release button to turn off, "
                 "<space> to advance to next test: ");
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_TEST;
   } break;
@@ -146,7 +145,7 @@ void test_stdbsp_step(void) {
   } break;
 
   case TEST_STDBSP_STATE_TIME_HELP: {
-    test_putstr("\nWatch for messages once per second.  "
+    mu_stdbsp_puts("\nWatch for messages once per second.  "
                 "Type <space> to quit: ");
     s_test_stdbsp_ctx.time_at =
         mu_time_offset(mu_time_now(), MU_TIME_MS_TO_REL(1000));
@@ -178,12 +177,6 @@ void test_stdbsp_step(void) {
 // *****************************************************************************
 // Private (static) code
 
-static void test_putstr(const char *str) {
-  while (*str) {
-    mu_stdbsp_serial_tx_byte((uint8_t)*str++);
-  }
-}
-
 static bool user_typed_space(void) {
   uint8_t ch;
 
@@ -205,29 +198,20 @@ static bool user_typed_space(void) {
   }
 }
 
-static void print_int(int v) {
-  // Handle the special case where v == 0
+static void print_int(uint32_t v) {
+  int n_digits;
+  char buf[20];
+
   if (v == 0) {
     mu_stdbsp_serial_tx_byte('0');
     return;
   }
-  // Handle negative values
-  if (v < 0) {
-    mu_stdbsp_serial_tx_byte('-');
-    v = -v;
+  // compute digits from least significant to most, store in buf
+  for (n_digits = 0; v != 0; n_digits++, v = v / 10) {
+    buf[n_digits] = (v % 10) + '0';
   }
-  // Reverse the decimal digits in v into v2.  If v == 7890, then v2 == 0987.
-  int n_digits = 0;
-  int v2 = 0;
-  while (v != 0) {
-    v2 *= 10;
-    v2 += v % 10;
-    v /= 10;
-    n_digits += 1;
-  }
-  // Now v2 has reversed digits.  Print from least to most significant digit.
-  while (n_digits-- != 0) {
-    mu_stdbsp_serial_tx_byte(v2 % 10 + '0');
-    v2 /= 10;
-  }
+  // printf the digits in reverse order
+  do {
+    mu_stdbsp_serial_tx_byte(buf[--n_digits]);
+  } while (n_digits != 0);
 }

@@ -27,7 +27,7 @@
 
 #include "mu_stdbsp.h"
 
-#include "mcc.h"
+#include "definitions.h"
 #include <stdbool.h>
 
 // *****************************************************************************
@@ -42,33 +42,40 @@
 // *****************************************************************************
 // Public code
 
-void mu_stdbsp_init(void) {
-  // none required
+void mu_stddrv_init(void) {
+
 }
 
-void mu_stdbsp_led_on(void) { LED_SetLow(); }
+void mu_stddrv_register_button_task(mu_task_t *on_change) {
 
-void mu_stdbsp_led_off(void) { LED_SetHigh(); }
+}
 
-void mu_stdbsp_led_toggle(void) { LED_Toggle(); }
+mu_stddrv_err_t mu_stddrv_serial_tx(mu_str_t *txbuf, mu_task_t *on_completion) {
 
-bool mu_stdbsp_button_is_pressed(void) { return SW0_GetValue() == 0; }
+}
 
-bool mu_stdbsp_serial_tx_is_ready(void) { return USART0_IsTxReady(); }
+mu_stddrv_err_t mu_stddrv_serial_rx(mu_str_t *rxbuf, mu_task_t *on_reception) {
 
-bool mu_stbsp_serial_tx_is_idle(void) { return USART0_IsTxDone(); }
+}
 
-bool mu_stdbsp_serial_tx_byte(uint8_t ch) { USART0_Write(ch);  return true; }
+void mu_stddrv_set_alarm(mu_time_abs_t at, mu_task_t *on_expiration) {
+  if (on_expiration == NULL) {
+    RTC_Timer32InterruptDisable(RTC_TIMER32_INT_MASK_COMPARE_MATCH);
+  } else {
+    RTC_Timer32CompareSet(at);
+    RTC_Timer32CallbackRegister(rtc_cb, on_expiration);
+    RTC_Timer32InterruptEnable(RTC_TIMER32_INT_MASK_COMPARE_MATCH);
+  }
+}
 
-bool mu_stdbsp_serial_rx_is_ready(void) { return USART0_IsRxReady(); }
+void mu_stddrv_sleep(mu_task_t *on_wake) {
 
-bool mu_stdbsp_serial_rx_byte(void) { return USART0_Read(); }
-
-void mu_stdbsp_puts(const char *str) {
-    while (*str) {
-        USART0_Write(*str++);
-    }
 }
 
 // *****************************************************************************
 // Private (static) code
+
+static void rtc_cb(RTC_TIMER32_INT_MASK intCause, uintptr_t context) {
+  RTC_Timer32InterruptDisable(intCause);
+  mu_irq_queue_task((mu_task_t *)context);
+}

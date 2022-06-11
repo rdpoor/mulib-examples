@@ -28,6 +28,7 @@
 #include "mu_stdbsp.h"
 
 #include "mcc.h"
+#include "mu_time.h"
 #include <stdbool.h>
 
 // *****************************************************************************
@@ -43,26 +44,32 @@
 // Public code
 
 void mu_stdbsp_init(void) {
-  // none required
+  mu_time_init();
 }
 
-void mu_stdbsp_led_on(void) { LED_SetLow(); }
+void mu_stdbsp_led_on(void) { LED__SetLow(); }
 
-void mu_stdbsp_led_off(void) { LED_SetHigh(); }
+void mu_stdbsp_led_off(void) { LED__SetHigh(); }
 
-void mu_stdbsp_led_toggle(void) { LED_Toggle(); }
+void mu_stdbsp_led_toggle(void) { LED__Toggle(); }
 
-bool mu_stdbsp_button_is_pressed(void) { return SW0_GetValue() == 0; }
+bool mu_stdbsp_button_is_pressed(void) { return BUTTON__GetValue() == 0; }
 
 bool mu_stdbsp_serial_tx_is_ready(void) { return USART0_IsTxReady(); }
 
 bool mu_stbsp_serial_tx_is_idle(void) { return USART0_IsTxDone(); }
 
-bool mu_stdbsp_serial_tx_byte(uint8_t ch) { USART0_Write(ch);  return true; }
+bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
+    USART0_Write(ch);
+    return true;
+}
 
 bool mu_stdbsp_serial_rx_is_ready(void) { return USART0_IsRxReady(); }
 
-bool mu_stdbsp_serial_rx_byte(void) { return USART0_Read(); }
+bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
+    *ch = USART0_Read();
+    return true;
+}
 
 void mu_stdbsp_puts(const char *str) {
     while (*str) {

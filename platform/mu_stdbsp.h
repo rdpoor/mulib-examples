@@ -111,6 +111,10 @@ bool mu_stdbsp_serial_rx_is_ready(void);
  */
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch);
 
+/**
+ * @brief Print a null-terminated string.
+ */
+void mu_stdbsp_puts(const char *str);
 
 #ifdef INCLUDE_HIGHER_LEVEL_MULIB_FUNCTIONS
 // I have not yet decided if these belong in mu_stdbsp.h or if they should be
