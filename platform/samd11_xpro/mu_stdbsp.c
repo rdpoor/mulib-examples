@@ -43,8 +43,7 @@
 // Public code
 
 void mu_stdbsp_init(void) {
-  RTC_Timer32Start();
-  mu_stdbsp_led_off();
+  // none required
 }
 
 void mu_stdbsp_led_on(void) { LED_On(); }
@@ -53,9 +52,7 @@ void mu_stdbsp_led_off(void) { LED_Off(); }
 
 void mu_stdbsp_led_toggle(void) { LED_Toggle(); }
 
-bool mu_stdbsp_button_is_pressed(void) {
-  return SWITCH_Get() == SWITCH_STATE_PRESSED;
-}
+bool mu_stdbsp_button_is_pressed(void) { return !SWITCH_Get(); }
 
 bool mu_stdbsp_serial_tx_is_ready(void) {
   return SERCOM2_USART_TransmitterIsReady();
@@ -75,11 +72,17 @@ bool mu_stdbsp_serial_rx_is_ready(void) {
 }
 
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
-  while (!SERCOM2_USART_ReceiverIsReady()) {
-    asm("nop");
+    while (!SERCOM2_USART_ReceiverIsReady()) {
+        asm("nop");
+    }
+    *ch = SERCOM2_USART_ReadByte();
+    return true;
+}
+
+void mu_stdbsp_puts(const char *str) {
+  while (*str) {
+    mu_stdbsp_serial_tx_byte(*str++);
   }
-  *ch = SERCOM2_USART_ReadByte();
-  return true;
 }
 
 // *****************************************************************************

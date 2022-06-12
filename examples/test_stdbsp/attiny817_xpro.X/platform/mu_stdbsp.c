@@ -44,7 +44,7 @@
 // Public code
 
 void mu_stdbsp_init(void) {
-  mu_time_init();
+  // none required
 }
 
 void mu_stdbsp_led_on(void) { LED__SetLow(); }

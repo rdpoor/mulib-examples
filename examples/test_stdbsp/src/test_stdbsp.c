@@ -82,6 +82,7 @@ static void print_int(uint32_t v);
 void test_stdbsp_init(void) {
   s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_INIT;
   mu_stdbsp_init();
+  mu_time_init();
 }
 
 void test_stdbsp_step(void) {

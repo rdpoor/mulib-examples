@@ -16,6 +16,7 @@
                 <sourceRootElem>../src</sourceRootElem>
                 <sourceRootElem>../../../src</sourceRootElem>
                 <sourceRootElem>../../platform</sourceRootElem>
+                <sourceRootElem>../../../../../platform/samd11_xpro</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
