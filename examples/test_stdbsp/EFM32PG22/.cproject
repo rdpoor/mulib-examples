@@ -53,6 +53,7 @@
 									<listOptionValue builtIn="false" value="-fmessage-length=0"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.c.compiler.option.include.paths.289061591" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\Users\r\Projects\mulib-examples\platform\efm32pg22&quot;"/>
 									<listOptionValue builtIn="false" value="C:/Users/r/Projects/mulib-examples/platform"/>
 									<listOptionValue builtIn="false" value="C:/Users/r/Projects/mulib-examples/examples/test_stdbsp/src"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/platform}&quot;"/>
@@ -183,7 +184,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="platform/mu_stddrv.c|.trash" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="platform/efm32pg22/mu_stddrv.c|platform/mu_stddrv.c|.trash" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -249,7 +250,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="config/sl_mx25_flash_shutdown_usart_config.h|config/sl_simple_button_btn0_config.h|config/sl_device_init_dcdc_config.h|config/sl_device_init_lfxo_config.h|config/sl_memory_config.h|config/sl_simple_led_led0_config.h|config/dmadrv_config.h|config/uartdrv_config.h|config/sl_board_control_config.h|config/sl_uartdrv_usart_vcom_config.h|config/sl_device_init_emu_config.h|config/sl_device_init_hfxo_config.h|config/sl_simple_button_config.h|config/emlib_core_debug_config.h|config/sl_sleeptimer_config.h|platform/mu_stddrv.c|autogen|gecko_sdk_4.0.2|app.c|main.c|app.h|.trash" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="platform/efm32pg22/mu_stddrv.c|config/sl_mx25_flash_shutdown_usart_config.h|config/sl_simple_button_btn0_config.h|config/sl_device_init_dcdc_config.h|config/sl_device_init_lfxo_config.h|config/sl_memory_config.h|config/sl_simple_led_led0_config.h|config/dmadrv_config.h|config/uartdrv_config.h|config/sl_board_control_config.h|config/sl_uartdrv_usart_vcom_config.h|config/sl_device_init_emu_config.h|config/sl_device_init_hfxo_config.h|config/sl_simple_button_config.h|config/emlib_core_debug_config.h|config/sl_sleeptimer_config.h|platform/mu_stddrv.c|autogen|gecko_sdk_4.0.2|app.c|main.c|app.h|.trash" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

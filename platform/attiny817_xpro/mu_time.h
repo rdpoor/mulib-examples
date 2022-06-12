@@ -26,9 +26,6 @@
  * @file mu_time.h
  *
  * @brief Platform specific declarations for mulib time functions.
- *
- * On the EFM32GG12, the RTCC is a 32 bit counter, clocked at 32768 Hz.
- * Configure it to run continually and roll over at maximum count.
  */
 
 #ifndef _MU_TIME_H_
@@ -55,7 +52,7 @@ extern "C" {
 
 // Required: define a macro to convert milliseconds to mu_time_rel_t
 #define MU_TIME_MS_TO_REL(ms) \
-  (mu_time_rel_t)((ms) * (MU_TIME_CLOCK_FREQUENCY / 1000))
+  (mu_time_rel_t)(((ms) * MU_TIME_CLOCK_FREQUENCY) / 1000)
 
 // Required: define a macro to convert mu_time_rel_t to milliseconds
 #define MU_TIME_REL_TO_MS(time) \

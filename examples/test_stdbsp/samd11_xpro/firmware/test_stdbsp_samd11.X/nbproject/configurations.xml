@@ -179,10 +179,12 @@
           <itemPath>../src/config/default/tasks.c</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <logicalFolder name="samd11_xpro" displayName="samd11_xpro" projectFiles="true">
-        <itemPath>../../../../../platform/samd11_xpro/mu_stdbsp.c</itemPath>
-        <itemPath>../../../../../platform/samd11_xpro/mu_stddrv.c</itemPath>
-        <itemPath>../../../../../platform/samd11_xpro/mu_time.c</itemPath>
+      <logicalFolder name="f2" displayName="platform" projectFiles="true">
+        <logicalFolder name="samd11_xpro" displayName="samd11_xpro" projectFiles="true">
+          <itemPath>../../../../../platform/samd11_xpro/mu_stdbsp.c</itemPath>
+          <itemPath>../../../../../platform/samd11_xpro/mu_stddrv.c</itemPath>
+          <itemPath>../../../../../platform/samd11_xpro/mu_time.c</itemPath>
+        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>../../../src/test_stdbsp.c</itemPath>

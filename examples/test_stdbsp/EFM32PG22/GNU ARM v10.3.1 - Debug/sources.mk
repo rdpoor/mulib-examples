@@ -33,5 +33,5 @@ gecko_sdk_4.0.2/platform/service/device_init/src \
 gecko_sdk_4.0.2/platform/service/sleeptimer/src \
 gecko_sdk_4.0.2/platform/service/system/src \
 gecko_sdk_4.0.2/platform/service/udelay/src \
-platform \
+platform/efm32pg22 \
 

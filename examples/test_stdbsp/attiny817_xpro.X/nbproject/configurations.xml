@@ -55,10 +55,14 @@
         <itemPath>mcc_generated_files/device_config.c</itemPath>
         <itemPath>mcc_generated_files/mcc.c</itemPath>
       </logicalFolder>
-      <logicalFolder name="platform" displayName="platform" projectFiles="true">
-        <itemPath>platform/mu_stdbsp.c</itemPath>
-        <itemPath>platform/mu_stddrv.c</itemPath>
-        <itemPath>platform/mu_time.c</itemPath>
+      <logicalFolder name="f1" displayName="platform" projectFiles="true">
+        <logicalFolder name="attiny817_xpro"
+                       displayName="attiny817_xpro"
+                       projectFiles="true">
+          <itemPath>../../../platform/attiny817_xpro/mu_stdbsp.c</itemPath>
+          <itemPath>../../../platform/attiny817_xpro/mu_stddrv.c</itemPath>
+          <itemPath>../../../platform/attiny817_xpro/mu_time.c</itemPath>
+        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="src" displayName="src" projectFiles="true">
         <itemPath>../src/test_stdbsp.c</itemPath>
@@ -75,6 +79,7 @@
   <sourceRootList>
     <Elem>../src</Elem>
     <Elem>.</Elem>
+    <Elem>../../../platform/attiny817_xpro</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -119,6 +124,10 @@
         <makeCustomizationEnableLongLines>false</makeCustomizationEnableLongLines>
         <makeCustomizationNormalizeHexFile>false</makeCustomizationNormalizeHexFile>
       </makeCustomizationType>
+      <item path="../../../platform/attiny817_xpro/mu_stddrv.c"
+            ex="true"
+            overriding="false">
+      </item>
       <EdbgTool>
         <property key="AutoSelectMemRanges" value="auto"/>
         <property key="communication.activationmode" value="nohv"/>

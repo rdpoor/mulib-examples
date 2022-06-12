@@ -15,6 +15,7 @@
             <sourceRootList>
                 <sourceRootElem>../src</sourceRootElem>
                 <sourceRootElem>.</sourceRootElem>
+                <sourceRootElem>../../../platform/attiny817_xpro</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
