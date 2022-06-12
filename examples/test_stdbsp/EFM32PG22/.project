@@ -31,6 +31,16 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>test_stdbsp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/test_stdbsp.c</locationURI>
+		</link>
+		<link>
+			<name>test_stdbsp.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/src/test_stdbsp.h</locationURI>
+		</link>
+		<link>
 			<name>gecko_sdk_4.0.2/hardware/board/inc/sl_board_control.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/hardware/board/inc/sl_board_control.h</locationURI>
@@ -89,6 +99,11 @@
 			<name>gecko_sdk_4.0.2/platform/CMSIS/Include/mpu_armv8.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/CMSIS/Include/mpu_armv8.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.0.2/platform/common/inc/sl_atomic.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/common/inc/sl_atomic.h</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.0.2/platform/common/inc/sl_enum.h</name>
@@ -394,6 +409,36 @@
 			<name>gecko_sdk_4.0.2/platform/service/device_init/src/sl_device_init_nvic.c</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/platform/service/device_init/src/sl_device_init_nvic.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.0.2/platform/service/sleeptimer/inc/sl_sleeptimer.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/service/sleeptimer/inc/sl_sleeptimer.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.0.2/platform/service/sleeptimer/inc/sli_sleeptimer.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/service/sleeptimer/inc/sli_sleeptimer.h</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.0.2/platform/service/sleeptimer/src/sl_sleeptimer.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/service/sleeptimer/src/sl_sleeptimer.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.0.2/platform/service/sleeptimer/src/sl_sleeptimer_hal_burtc.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/service/sleeptimer/src/sl_sleeptimer_hal_burtc.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.0.2/platform/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/service/sleeptimer/src/sl_sleeptimer_hal_rtcc.c</locationURI>
+		</link>
+		<link>
+			<name>gecko_sdk_4.0.2/platform/service/sleeptimer/src/sli_sleeptimer_hal.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/platform/service/sleeptimer/src/sli_sleeptimer_hal.h</locationURI>
 		</link>
 		<link>
 			<name>gecko_sdk_4.0.2/platform/service/system/inc/sl_system_init.h</name>

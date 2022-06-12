@@ -11,5 +11,6 @@ sl_mx25_flash_shutdown_usart_config.h=-59667380
 sl_simple_button_btn0_config.h=1258821894
 sl_simple_button_config.h=362231615
 sl_simple_led_led0_config.h=-120235916
+sl_sleeptimer_config.h=-1879962229
 sl_uartdrv_usart_vcom_config.h=-2030977824
 uartdrv_config.h=-941504238

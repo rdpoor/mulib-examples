@@ -29,6 +29,7 @@ component:
 - {id: emlib_burtc}
 - {id: device_init}
 - {id: emlib_rtcc}
+- {id: sleeptimer}
 define:
 - {name: DEBUG_EFM}
 ui_hints: {}

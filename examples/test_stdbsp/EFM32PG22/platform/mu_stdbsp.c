@@ -30,7 +30,7 @@
 #include "sl_simple_button_btn0_config.h"
 #include "sl_uartdrv_usart_vcom_config.h"
 #include "em_usart.h"
-// #include "mu_time.h"
+#include "mu_time.h"
 #include <stdbool.h>
 
 // *****************************************************************************
@@ -46,7 +46,7 @@
 // Public code
 
 void mu_stdbsp_init(void) {
-  // mu_time_init();
+  mu_time_init();
 }
 
 void mu_stdbsp_led_on(void) {

@@ -30,6 +30,7 @@ gecko_sdk_4.0.2/platform/emdrv/gpiointerrupt/src \
 gecko_sdk_4.0.2/platform/emdrv/uartdrv/src \
 gecko_sdk_4.0.2/platform/emlib/src \
 gecko_sdk_4.0.2/platform/service/device_init/src \
+gecko_sdk_4.0.2/platform/service/sleeptimer/src \
 gecko_sdk_4.0.2/platform/service/system/src \
 gecko_sdk_4.0.2/platform/service/udelay/src \
 platform \
