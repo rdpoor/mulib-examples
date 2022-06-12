@@ -1,0 +1,35 @@
+# Silicon Labs Project Configuration Tools: slcp, v0, Component selection file.
+project_name: EFM32PG22
+label: EFM32PG22
+description: |
+  This example project shows an empty configuration that can be used as a starting point to add components and functionality.
+category: Example|Platform
+package: platform
+quality: production
+source:
+- {path: app.c}
+- {path: main.c}
+include:
+- path: ''
+  file_list:
+  - {path: app.h}
+sdk: {id: gecko_sdk, version: 4.0.2}
+toolchain_settings: []
+component:
+- instance: [vcom]
+  id: uartdrv_usart
+- {id: sl_system}
+- instance: [btn0]
+  id: simple_button
+- {id: brd2503a}
+- {id: EFM32PG22C200F512IM40}
+- instance: [led0]
+  id: simple_led
+- {id: toolchain_gcc}
+- {id: emlib_burtc}
+- {id: device_init}
+- {id: emlib_rtcc}
+define:
+- {name: DEBUG_EFM}
+ui_hints: {}
+
