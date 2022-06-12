@@ -74,7 +74,7 @@ bool mu_stbsp_serial_tx_is_idle(void) {
 }
 
 bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
-    // block until tx buffer is avalable before writing the data
+    // block until tx buffer is available before writing the data
     while (!(SL_UARTDRV_USART_VCOM_PERIPHERAL->STATUS & USART_STATUS_TXBL)) {
     }
     SL_UARTDRV_USART_VCOM_PERIPHERAL->TXDATA = (uint32_t)ch;

@@ -47,20 +47,21 @@ unit testing.  Rather, they depend upon user interactions for verification.
 
 #define STATE_DEFINITIONS(M)                                                   \
   M(TEST_STDBSP_STATE_INIT)                                                    \
-  M(TEST_STDBSP_STATE_LED_HELP)                                                \
+  M(TEST_STDBSP_STATE_LED_START)                                               \
   M(TEST_STDBSP_STATE_LED_TEST)                                                \
-  M(TEST_STDBSP_STATE_BUTTON_HELP)                                             \
+  M(TEST_STDBSP_STATE_BUTTON_START)                                            \
   M(TEST_STDBSP_STATE_BUTTON_TEST)                                             \
-  M(TEST_STDBSP_STATE_TIME_HELP)                                               \
+  M(TEST_STDBSP_STATE_TIME_START)                                              \
   M(TEST_STDBSP_STATE_TIME_TEST)                                               \
   M(TEST_STDBSP_STATE_ERR)
 
 #define EXPAND_STATES(_name) _name,
-typedef enum {STATE_DEFINITIONS(EXPAND_STATES) } test_stdbsp_state_t;
+typedef enum { STATE_DEFINITIONS(EXPAND_STATES) } test_stdbsp_state_t;
 
 typedef struct {
   test_stdbsp_state_t state;
   mu_time_abs_t time_at;
+  bool pressed;
 } test_stdbsp_ctx_t;
 
 // *****************************************************************************
@@ -88,12 +89,12 @@ void test_stdbsp_step(void) {
   case TEST_STDBSP_STATE_INIT: {
     mu_stdbsp_puts("\n##########"
                    "\ntest_stdbsp: exercise the mu_stdbsp API");
-    s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_HELP;
+    s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_START;
   } break;
 
-  case TEST_STDBSP_STATE_LED_HELP: {
+  case TEST_STDBSP_STATE_LED_START: {
     mu_stdbsp_puts("\nType 0 to turn off LED, 1 to turn on, 2 to toggle, "
-                "<space> to advance to next test.");
+                   "<space> to advance to next test.");
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_TEST;
   } break;
 
@@ -104,56 +105,67 @@ void test_stdbsp_step(void) {
       mu_stdbsp_puts("\nmu_stdbsp_serial_rx_byte() failed -- quitting");
       s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_ERR;
     } else {
-      mu_stdbsp_serial_tx_byte(ch); // echo char
       switch (ch) {
       case '0': {
+        mu_stdbsp_puts("0 LED off");
         mu_stdbsp_led_off();
       } break;
       case '1': {
+        mu_stdbsp_puts("1 LED on");
         mu_stdbsp_led_on();
       } break;
       case '2': {
+        mu_stdbsp_puts("2 LED toggle");
         mu_stdbsp_led_toggle();
       } break;
       case ' ': {
-        s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_HELP;
+        s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_START;
       } break;
       default: {
         mu_stdbsp_puts("\nUnrecognized command '");
         mu_stdbsp_serial_tx_byte(ch);
         mu_stdbsp_puts("'");
-        s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_HELP;
+        s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_START;
       }
       }
     }
   } break;
 
-  case TEST_STDBSP_STATE_BUTTON_HELP: {
+  case TEST_STDBSP_STATE_BUTTON_START: {
     mu_stdbsp_puts("\nPress button to turn on LED, release button to turn off, "
-                "<space> to advance to next test: ");
+                   "<space> to advance to next test: ");
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_TEST;
+    s_test_stdbsp_ctx.pressed = mu_stdbsp_button_is_pressed();
   } break;
 
   case TEST_STDBSP_STATE_BUTTON_TEST: {
     if (user_typed_space()) {
-      s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_TIME_HELP;
-    } else if (mu_stdbsp_button_is_pressed()) {
-      mu_stdbsp_led_on();
+      s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_TIME_START;
     } else {
-      mu_stdbsp_led_off();
+      bool pressed = mu_stdbsp_button_is_pressed();
+      if (pressed != s_test_stdbsp_ctx.pressed) {
+        s_test_stdbsp_ctx.pressed = pressed;
+        if (pressed) {
+          mu_stdbsp_led_on();
+          mu_stdbsp_puts("\nLED on...");
+        } else {
+          mu_stdbsp_led_off();
+          mu_stdbsp_puts("\nLED off...");
+        }
+      }
     }
   } break;
 
-  case TEST_STDBSP_STATE_TIME_HELP: {
+  case TEST_STDBSP_STATE_TIME_START: {
     mu_stdbsp_puts("\nWatch for messages once per second.  "
-                "Type <space> to quit: ");
+                   "Type <space> to quit: ");
     s_test_stdbsp_ctx.time_at =
         mu_time_offset(mu_time_now(), MU_TIME_MS_TO_REL(1000));
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_TIME_TEST;
   } break;
 
   case TEST_STDBSP_STATE_TIME_TEST: {
-     mu_time_abs_t now = mu_time_now();
+    mu_time_abs_t now = mu_time_now();
     if (user_typed_space()) {
       s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_INIT;
     } else if (!mu_time_precedes(now, s_test_stdbsp_ctx.time_at)) {

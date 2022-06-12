@@ -116,50 +116,6 @@ bool mu_stdbsp_serial_rx_byte(uint8_t *ch);
  */
 void mu_stdbsp_puts(const char *str);
 
-#ifdef INCLUDE_HIGHER_LEVEL_MULIB_FUNCTIONS
-// I have not yet decided if these belong in mu_stdbsp.h or if they should be
-// partitioned into a separate file.  I think they believe in a separate file.
-
-#include "mu_str.h"
-#include "mu_task.h"
-
-/**
- * @brief Register a mu_task to be called whenever the standard button changes
- * state.
- */
-void mu_stdbsp_register_button_task(mu_task_t *on_change);
-
-/**
- * @brief Transmit a string over the standard serial line, calling the
- * `on_completion` task when the last byte has been sent.
- */
-mu_stdbsp_err_t mu_stdbsp_serial_tx(mu_str_t *txbuf, mu_task_t *on_completion);
-
-/**
- * @brief Start receiving bytes over the serial line, calling the on_reception
- * task when one or more bytes have been written into rxbuf.  A null value for
- * rx_buf or for on_reception will stop the receive process.
- */
-mu_stdbsp_err_t mu_stdbsp_serial_rx(mu_str_t *rxbuf, mu_task_t *on_reception);
-
-/**
- * @brief Set an alarm that will trigger when `mu_time_now()` equals `at`.
- * Passing on_expiration == NULL will clear the alarm.
- * Only one alarm is in effect at a time.  For multiple alarms, use `mu_sched`.
- */
-void mu_stdbsp_set_alarm(mu_time_abs_t at, mu_task_t *on_expiration);
-
-/**
- * @brief Put the processor into a low-power mode, waking on an external
- * interrupt or when the time specified by mu_stdbsp_set_alarm() arrives.
- */
-void mu_stdbsp_sleep(mu_task_t *on_wake);
-
-#endif  // #ifdef INCLUDE_HIGHER_LEVEL_MULIB_FUNCTIONS
-
-
-
-
 // *****************************************************************************
 // End of file
 
