@@ -22,6 +22,17 @@
  * SOFTWARE.
  */
 
+/**
+Implementation notes:
+
+We want a low-power, sub-millisecond source of time information.  Using a 32KHz
+clock as a timing reference is a natural choice, but a 16 bit counter only runs
+for (2^16)/32768 = 2 seconds before rolling over.
+
+So we gang two timers together, TRM2 and TMR3, to form a 32 bit counter.  This
+will run for (2^32)/32768 = 131072 seconds (1.5 days) before rolling over.
+*/
+
 // *****************************************************************************
 // Includes
 
@@ -44,12 +55,17 @@
 // Public code
 
 void mu_time_init(void) {
-	// TODO
+  // TODO
 }
 
 mu_time_abs_t mu_time_now(void) {
-	// TODO
-	return 0;
+  uint16_t ms16, ls16;
+  do {
+    ms16 = TIM3->CNT;          // capture msw
+    ls16 = TIM2->CNT;          // capture lsw
+  } while (ms16 != TIM3->CNT); // retry if overflow
+
+  return (ms16 << 16) | ls16; // compose into 32 bit value
 }
 
 mu_time_abs_t mu_time_offset(mu_time_abs_t t, mu_time_rel_t dt) {
@@ -71,13 +87,13 @@ bool mu_time_follows(mu_time_abs_t t1, mu_time_abs_t t2) {
 }
 
 int mu_time_rel_to_ms(mu_time_rel_t dt) {
-	// TODO
-	return dt;
+  // TODO
+  return dt;
 }
 
 mu_time_rel_t mu_time_ms_to_rel(int ms) {
-	// TODO
-	return ms;
+  // TODO
+  return ms;
 }
 
 // *****************************************************************************
