@@ -23,22 +23,21 @@
  */
 
 /**
- * @file mu_stddrv.h
+ * @file mu_config.h
  *
- * @brief
+ * @brief Platform specific definitions and declarations required by mulib.
+ *
+ * If you are porting mulib to a specific platform, create the required
+ * definitions and declarations in mu_config.h and mu_time.h and implementation
+ * in mu_time.c.  If you are using mulib in your project, you must find (or
+ & create) the appropriate mu_config and mu_time files for your config.
  */
 
-#ifndef _MU_STDDRV_H_
-#define _MU_STDDRV_H_
+#ifndef _MU_CONFIG_H_
+#define _MU_CONFIG_H_
 
 // *****************************************************************************
 // Includes
-
-#include "mu_str.h"
-#include "mu_task.h"
-
-#include <stdbool.h>
-#include <stdint.h>
 
 // *****************************************************************************
 // C++ Compatibility
@@ -50,46 +49,24 @@ extern "C" {
 // *****************************************************************************
 // Public types and definitions
 
+// Optional: un-comment this if your config supports floating point operations
+// #define MU_CONFIG_HAS_FLOAT
+
+// Optional: Define the number of events that may be scheduled in mu_sched.
+// Leave commented to accept the default.
+// #define MU_CONFIG_MAX_EVENTS <n>
+
+// Optional: Uncomment the following to generate profiling functions for mu_task
+// and mu_sched, at the expense of larger storage and slightly slower executiion
+// times.
+// define MU_CONFIG_PROFILING_TASKS
+
+// Optional: If implementing power management, the minimum time the system will
+// sleep for.
+// #define MU_CONFIG_SLEEP_TIME_MIN mu_time_ms_to_rel(1)
+
 // *****************************************************************************
 // Public declarations
-
-/**
- * @brief Perform platform-specific initialization.  Called once at startup.
- */
-void mu_stddrv_init(void);
-
-
-/**
- * @brief Register a mu_task to be called whenever the standard button changes
- * state.
- */
-void mu_stddrv_register_button_task(mu_task_t *on_change);
-
-/**
- * @brief Transmit a string over the standard serial line, calling the
- * `on_completion` task when the last byte has been sent.
- */
-mu_stddrv_err_t mu_stddrv_serial_tx(mu_str_t *txbuf, mu_task_t *on_completion);
-
-/**
- * @brief Start receiving bytes over the serial line, calling the on_reception
- * task when one or more bytes have been written into rxbuf.  A null value for
- * rx_buf or for on_reception will stop the receive process.
- */
-mu_stddrv_err_t mu_stddrv_serial_rx(mu_str_t *rxbuf, mu_task_t *on_reception);
-
-/**
- * @brief Set an alarm that will trigger when `mu_time_now()` equals `at`.
- * Passing on_expiration == NULL will clear the alarm.
- * Only one alarm is in effect at a time.  For multiple alarms, use `mu_sched`.
- */
-void mu_stddrv_set_alarm(mu_time_abs_t at, mu_task_t *on_expiration);
-
-/**
- * @brief Put the processor into a low-power mode, waking on an external
- * interrupt or when the time specified by mu_stddrv_set_alarm() arrives.
- */
-void mu_stddrv_sleep(mu_task_t *on_wake);
 
 // *****************************************************************************
 // End of file
@@ -98,4 +75,4 @@ void mu_stddrv_sleep(mu_task_t *on_wake);
 }
 #endif
 
-#endif /* #ifndef _MU_STDDRV_H_ */
+#endif /* #ifndef _MU_CONFIG_H_ */
