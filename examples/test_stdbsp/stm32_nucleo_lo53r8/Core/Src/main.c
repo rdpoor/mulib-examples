@@ -20,7 +20,6 @@
 #include "main.h"
 #include "mu_stdbsp.h"
 #include "test_stdbsp.h"
-#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -94,7 +93,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_LPTIM1_Init();
   /* USER CODE BEGIN 2 */
-  printf("\nI'm amazed...");
   test_stdbsp_init();
 
   /* USER CODE END 2 */
@@ -104,8 +102,6 @@ int main(void)
   while (1)
   {
 	  test_stdbsp_step();
-      // printf("\nHello World (%s)", mu_stdbsp_button_is_pressed() ? "pressed" : "released");
-      HAL_Delay(100);
       // mu_stdbsp_led_toggle();
       /* USER CODE END WHILE */
 

@@ -48,7 +48,7 @@ extern "C" {
 // Public types and definitions
 
 // Specific to this platform
-#define MU_TIME_CLOCK_FREQUENCY 32768
+#define MU_TIME_CLOCK_FREQUENCY 1000
 
 // Required: define a macro to convert milliseconds to mu_time_rel_t
 #define MU_TIME_MS_TO_REL(ms) \
