@@ -13,6 +13,7 @@ RM := rm -rf
 -include Drivers/STM32L0xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
+-include Core/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -35,34 +36,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := test_stdbsp
+BUILD_ARTIFACT_NAME := test_stdbsp_nucleo_l053r8
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-test_stdbsp.elf \
+test_stdbsp_nucleo_l053r8.elf \
 
 MAP_FILES += \
-test_stdbsp.map \
+test_stdbsp_nucleo_l053r8.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-test_stdbsp.list \
+test_stdbsp_nucleo_l053r8.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: test_stdbsp.elf secondary-outputs
+main-build: test_stdbsp_nucleo_l053r8.elf secondary-outputs
 
 # Tool invocations
-test_stdbsp.elf test_stdbsp.map: $(OBJS) $(USER_OBJS) /Users/r/Projects/mulib-examples/test_stdbsp/stm32_nucleo_lo53r8/STM32L053R8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "test_stdbsp.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"/Users/r/Projects/mulib-examples/test_stdbsp/stm32_nucleo_lo53r8/STM32L053R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test_stdbsp.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+test_stdbsp_nucleo_l053r8.elf test_stdbsp_nucleo_l053r8.map: $(OBJS) $(USER_OBJS) C:\Users\r\Projects\mulib-examples\test_stdbsp\nucleo_lo53r8\STM32L053R8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "test_stdbsp_nucleo_l053r8.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m0plus -T"C:\Users\r\Projects\mulib-examples\test_stdbsp\nucleo_lo53r8\STM32L053R8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="test_stdbsp_nucleo_l053r8.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -71,14 +72,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-test_stdbsp.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "test_stdbsp.list"
+test_stdbsp_nucleo_l053r8.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "test_stdbsp_nucleo_l053r8.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) default.size.stdout test_stdbsp.elf test_stdbsp.list test_stdbsp.map
+	-$(RM) default.size.stdout test_stdbsp_nucleo_l053r8.elf test_stdbsp_nucleo_l053r8.list test_stdbsp_nucleo_l053r8.map
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)

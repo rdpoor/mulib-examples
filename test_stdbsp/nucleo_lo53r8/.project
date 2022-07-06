@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>test_stdbsp</name>
+	<name>test_stdbsp_nucleo_l053r8</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -31,14 +31,24 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>Core/test_stdbsp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/test_stdbsp.c</locationURI>
+		</link>
+		<link>
+			<name>Core/test_stdbsp.h</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/test_stdbsp.h</locationURI>
+		</link>
+		<link>
 			<name>mu_platform/mu_config.h</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/stm32_nucleo_lo53r8/mu_config.h</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/nucleo_lo53r8/mu_config.h</locationURI>
 		</link>
 		<link>
 			<name>mu_platform/mu_stdbsp.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/stm32_nucleo_lo53r8/mu_stdbsp.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/nucleo_lo53r8/mu_stdbsp.c</locationURI>
 		</link>
 		<link>
 			<name>mu_platform/mu_stdbsp.h</name>
@@ -53,22 +63,12 @@
 		<link>
 			<name>mu_platform/mu_time.c</name>
 			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/stm32_nucleo_lo53r8/mu_time.c</locationURI>
+			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/nucleo_lo53r8/mu_time.c</locationURI>
 		</link>
 		<link>
 			<name>mu_platform/mu_time.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/common/mu_time.h</locationURI>
-		</link>
-		<link>
-			<name>Core/Src/test_stdbsp.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/test_stdbsp.c</locationURI>
-		</link>
-		<link>
-			<name>Core/Src/test_stdbsp.h</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/test_stdbsp.h</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

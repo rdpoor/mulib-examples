@@ -63,30 +63,30 @@ bool mu_stdbsp_button_is_pressed(void) {
 }
 
 bool mu_stdbsp_serial_tx_is_ready(void) {
-    return LPUART1->ISR & USART_ISR_TXE;
+    return USART2->ISR & USART_ISR_TXE;
 }
 
 bool mu_stbsp_serial_tx_is_idle(void) {
-    return LPUART1->ISR & USART_ISR_TC;
+    return USART2->ISR & USART_ISR_TC;
 }
 
 bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
     while (!mu_stdbsp_serial_tx_is_ready()) {
         asm("nop");
     }
-    LPUART1->TDR = ch;
+    USART2->TDR = ch;
     return true;
 }
 
 bool mu_stdbsp_serial_rx_is_ready(void) {
-    return LPUART1->ISR & USART_ISR_RXNE;
+    return USART2->ISR & USART_ISR_RXNE;
 }
 
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
     while (!mu_stdbsp_serial_rx_is_ready()) {
         asm("nop");
     }
-	*ch = LPUART1->RDR;
+	*ch = USART2->RDR;
 	return true;
 }
 

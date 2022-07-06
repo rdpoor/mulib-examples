@@ -23,6 +23,7 @@ C_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
+Core \
 Drivers/STM32L0xx_HAL_Driver/Src \
 mu_platform \
 
