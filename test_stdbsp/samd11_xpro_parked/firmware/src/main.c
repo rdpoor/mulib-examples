@@ -53,12 +53,6 @@ int main ( void )
     return ( EXIT_FAILURE );
 }
 
-// int read(int handle, void *buffer, unsigned int len) { 
-//     // stub implementation to prevent warning in XC32 v4.00
-//     return 0;
-// }
-
 /*******************************************************************************
  End of File
 */
-

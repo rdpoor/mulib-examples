@@ -54,20 +54,6 @@
 #include <stdlib.h>                     // Defines EXIT_FAILURE
 #include "definitions.h"                // SYS function prototypes
 
-#define RX_BUFFER_SIZE 256
-#define LED_ON    LED_Clear
-#define LED_OFF   LED_Set
-
-#if 0
-char messageStart[] = "**** USART Line Echo Demo: Blocking Transfer without the interrupt ****\r\n\
-**** Type a line of characters and press the Enter key. **** \r\n\
-**** Entered line will be echoed back, and the LED is toggled. ****\r\n";
-char newline[] = "\r\n";
-char errorMessage[] = "\r\n**** USART error has occurred ****\r\n";
-char receiveBuffer[RX_BUFFER_SIZE] = {};
-char data = 0;
-#endif
-
 // *****************************************************************************
 // *****************************************************************************
 // Section: Main Entry Point
@@ -76,51 +62,17 @@ char data = 0;
 
 int main ( void )
 {
-    // uint16_t rxCounter = 0;
-
     /* Initialize all modules */
     SYS_Initialize ( NULL );
     test_stdbsp_init();
-
-    /* Send start message */
-    // SERCOM2_USART_Write(&messageStart[0], sizeof(messageStart));
 
     while ( true )
     {
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         SYS_Tasks ( );
         test_stdbsp_step();
-
-        // /* Check if there is a received character */
-        // if(SERCOM2_USART_ReceiverIsReady() == true)
-        // {
-        //     if(SERCOM2_USART_ErrorGet() == USART_ERROR_NONE)
-        //     {
-        //         SERCOM2_USART_Read(&data, 1);
-        //
-        //         if((data == '\n') || (data == '\r'))
-        //         {
-        //             SERCOM2_USART_Write(&newline[0],sizeof(newline));
-        //             SERCOM2_USART_Write(&receiveBuffer[0],rxCounter);
-        //             SERCOM2_USART_Write(&newline[0],sizeof(newline));
-        //
-        //             rxCounter = 0;
-        //             LED_Toggle();
-        //         }
-        //         else
-        //         {
-        //             receiveBuffer[rxCounter++] = data;
-        //         }
-        //     }
-        //     else
-        //     {
-        //         SERCOM2_USART_Write(&errorMessage[0],sizeof(errorMessage));
-        //     }
-        // }
-    }  // while
-
-
-
+    }
+    
     /* Execution should not come here during normal operation */
 
     return ( EXIT_FAILURE );
