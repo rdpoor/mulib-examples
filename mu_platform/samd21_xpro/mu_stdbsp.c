@@ -58,29 +58,35 @@ bool mu_stdbsp_button_is_pressed(void) {
 }
 
 bool mu_stdbsp_serial_tx_is_ready(void) {
-  return SERCOM2_USART_TransmitterIsReady();
+  return SERCOM3_USART_TransmitterIsReady();
 }
 
 bool mu_stbsp_serial_tx_is_idle(void) {
-  return SERCOM2_USART_TransmitComplete();
+  return SERCOM3_USART_TransmitComplete();
 }
 
 bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
-  SERCOM2_USART_WriteByte(ch);
+  // TODO: confirm where and when to check for USART errors
+  if (SERCOM3_USART_ErrorGet() != USART_ERROR_NONE) {
+    return false;
+  }
+  SERCOM3_USART_WriteByte(ch);
   return true;
 }
 
 bool mu_stdbsp_serial_rx_is_ready(void) {
-  return SERCOM2_USART_ReceiverIsReady();
+  return SERCOM3_USART_ReceiverIsReady();
 }
 
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
-  while (!SERCOM2_USART_ReceiverIsReady()) {
+  while (!SERCOM3_USART_ReceiverIsReady()) {
     asm("nop");
   }
-  *ch = SERCOM2_USART_ReadByte();
+  *ch = SERCOM3_USART_ReadByte();
   return true;
 }
+
+uint32_t mu_stdbsp_now(void) { return RTC_Timer32CounterGet(); }
 
 // *****************************************************************************
 // Private (static) code
