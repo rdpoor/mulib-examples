@@ -111,6 +111,11 @@ bool mu_stdbsp_serial_rx_is_ready(void);
  */
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch);
 
+/**
+ * @brief Return the current time.  Time is the number of 1/32758 second ticks
+ * since initialization.  It will roll over after 131072 seconds (36.4 hours).
+ */
+uint32_t mu_stdbsp_now(void);
 
 // *****************************************************************************
 // End of file

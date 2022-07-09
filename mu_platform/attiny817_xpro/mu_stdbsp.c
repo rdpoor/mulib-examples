@@ -27,8 +27,9 @@
 
 #include "mu_stdbsp.h"
 
-#include "definitions.h"
+#include "mcc_generated_files/mcc.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 // *****************************************************************************
 // Private types and definitions
@@ -36,51 +37,80 @@
 // *****************************************************************************
 // Private (static) storage
 
+// synthesized high-order 16 bits of a virtual 32 bit timer.
+static volatile uint16_t s_timer_hi;
+
 // *****************************************************************************
 // Private (forward) declarations
+
+/**
+ * Called whenever the RTC overflows every (1<<16)/32768 = 2 seconds
+ */
+static void rtc_cb(void);
+
+/*
+ * Get the current RTC value.
+ */
+static uint16_t read_rtc(void);
 
 // *****************************************************************************
 // Public code
 
 void mu_stdbsp_init(void) {
-  RTC_Timer32Start();
+  s_timer_hi = 0;
+  RTC_SetOVFIsrCallback(rtc_cb);
+  RTC_EnableOVFInterrupt();
   mu_stdbsp_led_off();
 }
 
-void mu_stdbsp_led_on(void) { LED_On(); }
+void mu_stdbsp_led_on(void) { LED0_SetLow(); }
 
-void mu_stdbsp_led_off(void) { LED_Off(); }
+void mu_stdbsp_led_off(void) { LED0_SetHigh(); }
 
-void mu_stdbsp_led_toggle(void) { LED_Toggle(); }
+void mu_stdbsp_led_toggle(void) { LED0_Toggle(); }
 
 bool mu_stdbsp_button_is_pressed(void) {
-  return SWITCH_Get() == SWITCH_STATE_PRESSED;
+  return !SW0_GetValue();
 }
 
 bool mu_stdbsp_serial_tx_is_ready(void) {
-  return SERCOM2_USART_TransmitterIsReady();
+  return USART0_IsTxReady();
 }
 
 bool mu_stbsp_serial_tx_is_idle(void) {
-  return SERCOM2_USART_TransmitComplete();
+  return USART0_IsTxDone();
 }
 
 bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
-  SERCOM2_USART_WriteByte(ch);
+  USART0_Write(ch);  // includes busy wait
   return true;
 }
 
 bool mu_stdbsp_serial_rx_is_ready(void) {
-  return SERCOM2_USART_ReceiverIsReady();
+  return USART0_IsRxReady();
 }
 
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
-  while (!SERCOM2_USART_ReceiverIsReady()) {
-    asm("nop");
-  }
-  *ch = SERCOM2_USART_ReadByte();
+  *ch = USART0_Read();  // includes busy wait
   return true;
+}
+
+uint32_t mu_stdbsp_now(void) {
+  uint16_t hi, lo;
+  do {
+    hi = s_timer_hi;
+    lo = read_rtc();
+  } while (s_timer_hi != hi);
+  return ((uint32_t)hi << 16) | lo;
 }
 
 // *****************************************************************************
 // Private (static) code
+
+static void rtc_cb(void) {
+  s_timer_hi += 1;
+}
+
+uint16_t read_rtc(void) {
+  return RTC_ReadCounter();
+}

@@ -36,13 +36,14 @@ unit testing.  Rather, they depend upon user interactions for verification.
 #include "test_stdbsp.h"
 
 #include "mu_stdbsp.h"
-#include "mu_time.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 // *****************************************************************************
 // Private types and definitions
+
+#define TICS_PER_SECOND 32768
 
 #define STATE_DEFINITIONS(M)                                                   \
   M(TEST_STDBSP_STATE_INIT)                                                    \
@@ -55,11 +56,12 @@ unit testing.  Rather, they depend upon user interactions for verification.
   M(TEST_STDBSP_STATE_ERR)
 
 #define EXPAND_STATES(_name) _name,
-typedef enum {STATE_DEFINITIONS(EXPAND_STATES) } test_stdbsp_state_t;
+typedef enum { STATE_DEFINITIONS(EXPAND_STATES) } test_stdbsp_state_t;
 
 typedef struct {
   test_stdbsp_state_t state;
-  mu_time_abs_t time_at;
+  uint32_t time_at;
+  bool prev_button;
 } test_stdbsp_ctx_t;
 
 // *****************************************************************************
@@ -74,7 +76,11 @@ static void test_putstr(const char *str);
 
 static bool user_typed_space(void);
 
-static void print_int(int n);
+static void print_uint32(uint32_t n);
+
+static bool time_precedes(uint32_t t1, uint32_t t2);
+
+static uint32_t time_offset(uint32_t t1, int32_t dt);
 
 // *****************************************************************************
 // Public code
@@ -133,37 +139,45 @@ void test_stdbsp_step(void) {
     test_putstr("\nPress button to turn on LED, release button to turn off, "
                 "<space> to advance to next test: ");
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_TEST;
+    s_test_stdbsp_ctx.prev_button = false;
   } break;
 
   case TEST_STDBSP_STATE_BUTTON_TEST: {
     if (user_typed_space()) {
       s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_TIME_HELP;
-    } else if (mu_stdbsp_button_is_pressed()) {
-      mu_stdbsp_led_on();
     } else {
-      mu_stdbsp_led_off();
+      bool curr_button = mu_stdbsp_button_is_pressed();
+      if (curr_button != s_test_stdbsp_ctx.prev_button) {
+        if (curr_button) {
+          test_putstr("\nButton pressed");
+          mu_stdbsp_led_on();
+        } else {
+          test_putstr("\nButton released");
+          mu_stdbsp_led_off();
+        }
+        s_test_stdbsp_ctx.prev_button = curr_button;
+      }
     }
   } break;
 
   case TEST_STDBSP_STATE_TIME_HELP: {
     test_putstr("\nWatch for messages once per second.  "
                 "Type <space> to quit: ");
-    s_test_stdbsp_ctx.time_at =
-        mu_time_offset(mu_time_now(), MU_TIME_MS_TO_REL(1000));
+    s_test_stdbsp_ctx.time_at = time_offset(mu_stdbsp_now(), TICS_PER_SECOND);
     s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_TIME_TEST;
   } break;
 
   case TEST_STDBSP_STATE_TIME_TEST: {
-     mu_time_abs_t now = mu_time_now();
+    uint32_t now = mu_stdbsp_now();
     if (user_typed_space()) {
       s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_INIT;
-    } else if (!mu_time_precedes(now, s_test_stdbsp_ctx.time_at)) {
+    } else if (!time_precedes(now, s_test_stdbsp_ctx.time_at)) {
       // time has elapsed...
       mu_stdbsp_led_toggle();
       mu_stdbsp_serial_tx_byte('\n');
-      print_int(now);
+      print_uint32(now);
       s_test_stdbsp_ctx.time_at =
-          mu_time_offset(s_test_stdbsp_ctx.time_at, MU_TIME_MS_TO_REL(1000));
+          time_offset(s_test_stdbsp_ctx.time_at, TICS_PER_SECOND);
       // remain in this state...
     }
   } break;
@@ -205,29 +219,32 @@ static bool user_typed_space(void) {
   }
 }
 
-static void print_int(int v) {
-  // Handle the special case where v == 0
+static void print_uint32(uint32_t v) {
+  uint8_t n_digits = 0;
+  uint32_t v2 = 0;
+  // Reverse the decimal digits in v into v2.  If v == 007890, then v2 == 0987
+  // and n_digits = 4.
+
   if (v == 0) {
-    mu_stdbsp_serial_tx_byte('0');
-    return;
+    // Handle the special case where v == 0
+    n_digits = 1;
   }
-  // Handle negative values
-  if (v < 0) {
-    mu_stdbsp_serial_tx_byte('-');
-    v = -v;
-  }
-  // Reverse the decimal digits in v into v2.  If v == 7890, then v2 == 0987.
-  int n_digits = 0;
-  int v2 = 0;
+
   while (v != 0) {
     v2 *= 10;
     v2 += v % 10;
     v /= 10;
     n_digits += 1;
   }
-  // Now v2 has reversed digits.  Print from least to most significant digit.
+  // Now v2 has reversed digits.  Print n_digits.
   while (n_digits-- != 0) {
     mu_stdbsp_serial_tx_byte(v2 % 10 + '0');
     v2 /= 10;
   }
 }
+
+static bool time_precedes(uint32_t t1, uint32_t t2) {
+  return (t1 - t2) > INT32_MAX;
+}
+
+static uint32_t time_offset(uint32_t t1, int32_t dt) { return t1 + dt; }
