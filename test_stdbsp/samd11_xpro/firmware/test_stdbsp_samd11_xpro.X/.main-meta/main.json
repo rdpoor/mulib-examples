@@ -6,7 +6,7 @@
 		"name": "com.microchip.mcu32.mplabx.project.csp_apps_sam_d11_usart_echo_blocking",
 		"version": "3.2.0",
 		"displayName": "SERCOM USART blocking Example for SAM D09/D10/D11 Family",
-		"projectName": "usart_echo_blocking_sam_d11_xpro",
+		"projectName": "test_stdbsp_samd11_xpro",
 		"shortDescription": "This example application demonstrates how to use the SERCOM peripheral in USART mode to transfer block of data in a blocking manner.",
 		"ide": {
 			"name": "MPLABX",
