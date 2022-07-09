@@ -48,11 +48,6 @@ static volatile uint16_t s_timer_hi;
  */
 static void rtc_cb(void);
 
-/*
- * Get the current RTC value.
- */
-static uint16_t read_rtc(void);
-
 // *****************************************************************************
 // Public code
 
@@ -97,11 +92,12 @@ bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
 
 uint32_t mu_stdbsp_now(void) {
   uint16_t hi, lo;
+  // This is a technique for creating a 32 bit RTC without disabling interrupts
   do {
-    hi = s_timer_hi;
-    lo = read_rtc();
-  } while (s_timer_hi != hi);
-  return ((uint32_t)hi << 16) | lo;
+    hi = s_timer_hi;                // make a copy of high 16 bits
+    lo = RTC_ReadCounter();         // make a copy of low 16 bits
+  } while (s_timer_hi != hi);       // if there was a roll-over, repeat process
+  return ((uint32_t)hi << 16) | lo; // return 32 bit composite value
 }
 
 // *****************************************************************************
@@ -109,8 +105,4 @@ uint32_t mu_stdbsp_now(void) {
 
 static void rtc_cb(void) {
   s_timer_hi += 1;
-}
-
-uint16_t read_rtc(void) {
-  return RTC_ReadCounter();
 }

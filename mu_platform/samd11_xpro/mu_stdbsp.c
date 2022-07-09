@@ -66,6 +66,10 @@ bool mu_stbsp_serial_tx_is_idle(void) {
 }
 
 bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
+  // TODO: confirm where and when to check for USART errors
+  if (SERCOM2_USART_ErrorGet() != USART_ERROR_NONE) {
+    return false;
+  }
   SERCOM2_USART_WriteByte(ch);
   return true;
 }
@@ -75,12 +79,16 @@ bool mu_stdbsp_serial_rx_is_ready(void) {
 }
 
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
-  while (!SERCOM2_USART_ReceiverIsReady()) {
+  // TODO: confirm where and when to check for USART errors
+  while (!SERCOM2_USART_ReceiverIsReady() &&
+         (SERCOM2_USART_ErrorGet() == USART_ERROR_NONE)) {
     asm("nop");
   }
   *ch = SERCOM2_USART_ReadByte();
-  return true;
+  return SERCOM2_USART_ErrorGet() == USART_ERROR_NONE;
 }
+
+uint32_t mu_stdbsp_now(void) { return RTC_Timer32CounterGet(); }
 
 // *****************************************************************************
 // Private (static) code

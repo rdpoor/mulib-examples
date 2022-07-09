@@ -1,0 +1,83 @@
+{
+	"metaDataVersion": "1.0.0",
+	"category": "com.microchip.ide.project",
+	"content": {
+		"metaDataVersion": "1.1.0",
+		"name": "com.microchip.mcu32.mplabx.project.csp_apps_sam_d11_usart_echo_blocking",
+		"version": "3.2.0",
+		"displayName": "SERCOM USART blocking Example for SAM D09/D10/D11 Family",
+		"projectName": "usart_echo_blocking_sam_d11_xpro",
+		"shortDescription": "This example application demonstrates how to use the SERCOM peripheral in USART mode to transfer block of data in a blocking manner.",
+		"ide": {
+			"name": "MPLABX",
+			"semverRange": ">=6.0.0"
+		},
+		"compiler": [
+			{
+				"name": "XC32",
+				"semverRange": ">=4.1.0"
+			}
+		],
+		"dfp": {
+			"name": "SAMD11_DFP",
+			"semverRange": "^2.3.40"
+		},
+		"configurator": {
+			"name": "MHC",
+			"semverRange": ">=3.8.5"
+		},
+		"device": {
+			"metaDataVersion": "1.0.0",
+			"category": "com.microchip.portal.contentRef",
+			"content": {
+				"metaDataVersion": "1.0.0",
+				"category": "com.microchip.device",
+				"name": "ATSAMD11D14AM",
+				"versionRange": "*"
+			}
+		},
+		"author": "Microchip",
+		"subcategories": [
+			[
+				"Development Kit",
+				"SAM D11 Xplained Pro Evaluation Kit"
+			],
+			[
+				"Harmony",
+				"Peripherals",
+				"SERCOM"
+			],
+			[
+				"Peripherals",
+				"SERCOM"
+			]
+		],
+		"peripherals": [
+			"SERCOM"
+		],
+		"keywords": [
+			"MHC",
+			"Harmony",
+			"ATSAMD11D14AM",
+			"SAM D09/D10/D11 Family",
+			"FLEXCOM",
+			"Serial Communication",
+			"I2C",
+			"SPI",
+			"UART",
+			"SERCOM",
+			"TWI"
+		],
+		"additionalData": {
+			"longDescription": {
+				"metaDataVersion": "1.0.0",
+				"category": "com.microchip.portal.fileRef",
+				"content": {
+					"metaDataVersion": "1.0.0",
+					"fileName": "./../../readme.md",
+					"mimeType": "text/markdown"
+				}
+			}
+		}
+	}
+}
