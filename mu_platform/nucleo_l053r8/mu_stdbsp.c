@@ -28,14 +28,11 @@
 #include "mu_stdbsp.h"
 
 #include "main.h"
-#include "stm32g4xx_hal.h"
+#include "stm32l0xx_hal.h"
 #include <stdbool.h>
 
 // *****************************************************************************
 // Private types and definitions
-
-// *****************************************************************************
-// Private (static) storage
 
 // synthesized high-order 16 bits of a virtual 32 bit timer.
 static volatile uint16_t s_timer_hi;
@@ -43,9 +40,12 @@ static volatile uint16_t s_timer_hi;
 static LPTIM_HandleTypeDef *s_hlptim;
 
 // *****************************************************************************
-// Private (forward) declarations
+// Private (static) storage
 
 static uint32_t read_lptim_count(void);
+
+// *****************************************************************************
+// Private (forward) declarations
 
 // *****************************************************************************
 // Public code
@@ -71,34 +71,34 @@ void mu_stdbsp_led_toggle(void) {
 }
 
 bool mu_stdbsp_button_is_pressed(void) {
-    return GPIOC->IDR & GPIO_PIN_13;
+    return !(GPIOC->IDR & GPIO_PIN_13);
 }
 
 bool mu_stdbsp_serial_tx_is_ready(void) {
-    return LPUART1->ISR & USART_ISR_TXE;
+    return USART2->ISR & USART_ISR_TXE;
 }
 
 bool mu_stbsp_serial_tx_is_idle(void) {
-    return LPUART1->ISR & USART_ISR_TC;
+    return USART2->ISR & USART_ISR_TC;
 }
 
 bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
     while (!mu_stdbsp_serial_tx_is_ready()) {
         asm("nop");
     }
-    LPUART1->TDR = ch;
+    USART2->TDR = ch;
     return true;
 }
 
 bool mu_stdbsp_serial_rx_is_ready(void) {
-    return LPUART1->ISR & USART_ISR_RXNE;
+    return USART2->ISR & USART_ISR_RXNE;
 }
 
 bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
     while (!mu_stdbsp_serial_rx_is_ready()) {
         asm("nop");
     }
-	*ch = LPUART1->RDR;
+	*ch = USART2->RDR;
 	return true;
 }
 
@@ -144,7 +144,7 @@ static uint32_t read_lptim_count(void) {
  * Called whenever s_hlptim overflows every (1<<16)/32768 = 2 seconds
  *
  * This overrides a weak alias defined in
- * Drivers\STM32G4xx_HAL_Driver\Src\stm32g4xx_hal_lptim.c
+ * Drivers\STM32L0xx_HAL_Driver\Src\stm32l0xx_hal_lptim.c
  */
 void HAL_LPTIM_AutoReloadMatchCallback(LPTIM_HandleTypeDef *hlptim) {
   (void)hlptim;
