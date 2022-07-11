@@ -23,7 +23,7 @@ C_DEPS :=
 SUBDIRS := \
 Core/Src \
 Core/Startup \
-Core \
+Core/mu_platform \
+Drivers/CMSIS/Device/ST/STM32G4xx/Source/Templates \
 Drivers/STM32G4xx_HAL_Driver/Src \
-mu_platform \
 

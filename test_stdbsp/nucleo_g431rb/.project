@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>test_stdbsp</name>
+	<name>test_stdbsp_nucleo_g431rb</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -31,44 +31,49 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Core/test_stdbsp.c</name>
-			<type>1</type>
-			<locationURI>PARENT-1-PROJECT_LOC/common/test_stdbsp.c</locationURI>
+			<name>Core/mu_platform</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
-			<name>Core/test_stdbsp.h</name>
+			<name>Core/Inc/test_stdbsp.h</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/common/test_stdbsp.h</locationURI>
 		</link>
 		<link>
-			<name>mu_platform/mu_config.h</name>
+			<name>Core/Src/test_stdbsp.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/common/test_stdbsp.c</locationURI>
+		</link>
+		<link>
+			<name>Core/mu_platform/mu_config.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/nucleo_g431rb/mu_config.h</locationURI>
 		</link>
 		<link>
-			<name>mu_platform/mu_stdbsp.c</name>
+			<name>Core/mu_platform/mu_stdbsp.c</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/nucleo_g431rb/mu_stdbsp.c</locationURI>
 		</link>
 		<link>
-			<name>mu_platform/mu_stdbsp.h</name>
+			<name>Core/mu_platform/mu_stdbsp.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/common/mu_stdbsp.h</locationURI>
 		</link>
 		<link>
-			<name>mu_platform/mu_stddrv.h</name>
+			<name>Core/mu_platform/mu_stddrv.h</name>
 			<type>1</type>
 			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/common/mu_stddrv.h</locationURI>
 		</link>
-		<link>
-			<name>mu_platform/mu_time.c</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/nucleo_g431rb/mu_time.c</locationURI>
-		</link>
-		<link>
-			<name>mu_platform/mu_time.h</name>
-			<type>1</type>
-			<locationURI>PARENT-2-PROJECT_LOC/mu_platform/common/mu_time.h</locationURI>
-		</link>
 	</linkedResources>
+	<variableList>
+		<variable>
+			<name>copy_PARENT</name>
+			<value>$%7BPARENT-3-PROJECT_LOC%7D/Projects/mulib-examples/test_stdbsp</value>
+		</variable>
+		<variable>
+			<name>copy_PARENT1</name>
+			<value>$%7BPARENT-1-copy_PARENT%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>

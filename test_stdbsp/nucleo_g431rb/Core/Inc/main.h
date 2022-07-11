@@ -53,6 +53,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+LPTIM_HandleTypeDef *main_get_hpltim_handle(void);
 
 /* USER CODE END EFP */
 

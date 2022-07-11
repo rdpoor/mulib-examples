@@ -1933,7 +1933,7 @@ void HAL_LPTIM_IRQHandler(LPTIM_HandleTypeDef *hlptim)
 #endif /* USE_HAL_LPTIM_REGISTER_CALLBACKS */
     }
   }
-}
+ }
 
 /**
   * @brief  Compare match callback in non-blocking mode.
