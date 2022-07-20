@@ -1,0 +1,125 @@
+C51 COMPILER V9.60.0.0   EFM8BB51_BLINKY                                                   07/12/2022 05:49:37 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE EFM8BB51_BLINKY
+OBJECT MODULE PLACED IN .\src\EFM8BB51_Blinky.OBJ
+COMPILER INVOKED BY: C:\SiliconLabs\SimplicityStudio\v5\developer\toolchains\keil_8051\9.60\BIN\C51.exe C:\Users\r\Proje
+                    -cts\mulib-examples\test_stdbsp\efm8bb51\EFM8BB51_Blinky2\src\EFM8BB51_Blinky.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) 
+                    -WARNINGLEVEL(2) FLOATFUZZY(3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\r\Projects\
+                    -mulib-examples\test_stdbsp\efm8bb51\EFM8BB51_Blinky2\inc;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.2.3//
+                    -Device/shared/si8051Base;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.2.3//Device/EFM8BB51/inc;C:\Users\r\P
+                    -rojects\mulib-examples\mu_platform\common) PRINT(.\src\EFM8BB51_Blinky.lst) COND PAGEWIDTH(120) PAGELENGTH(65) PREPRINT(
+                    -.\src\EFM8BB51_Blinky.I) OBJECT(.\src\EFM8BB51_Blinky.OBJ)
+
+line level    source
+
+   1          //-----------------------------------------------------------------------------
+   2          // BB51_Blinky.c
+   3          //-----------------------------------------------------------------------------
+   4          // Copyright 2021 Silicon Laboratories, Inc.
+   5          // http://developer.silabs.com/legal/version/v11/Silicon_Labs_Software_License_Agreement.txt
+   6          //
+   7          // Program Description:
+   8          //
+   9          // This program flashes the LED0 on the EFM8BB51 target board about
+  10          // five times a second using the interrupt handler for Timer2.
+  11          //
+  12          //
+  13          // How To Test:
+  14          //
+  15          // 1) Connect the EFM8BB51 Explorer Kit to a PC using a mini USB cable.
+  16          // 2) Compile and download code to the EFM8BB51 Explorer Kit.
+  17          //    In Simplicity Studio IDE, select Run -> Debug from the menu bar,
+  18          //    click the Debug button in the quick menu, or press F11.
+  19          // 3) Run the code.
+  20          //    In Simplicity Studio IDE, select Run -> Resume from the menu bar,
+  21          //    click the Resume button in the quick menu, or press F8.
+  22          // 4) The LED0 should blink at approximately 5 Hz.
+  23          //
+  24          //
+  25          // Target:         EFM8BB51
+  26          // Tool chain:     Generic
+  27          //
+  28          //
+  29          // Release 0.1 (RN)
+  30          //    - Initial Revision
+  31          //
+  32          
+  33          //-----------------------------------------------------------------------------
+  34          // Includes
+  35          //-----------------------------------------------------------------------------
+  36          #include <si_toolchain.h>
+  37          #include <SI_EFM8BB51_Register_Enums.h>                  // SI_SFR declarations
+  38          #include "InitDevice.h"
+  39          
+  40          //-----------------------------------------------------------------------------
+  41          // Global VARIABLES
+  42          //-----------------------------------------------------------------------------
+  43          SI_LOCATED_VARIABLE_NO_INIT (reserved, uint8_t, SI_SEG_XDATA, 0x0000);
+  44          
+  45          //-----------------------------------------------------------------------------
+  46          // Pin Definitions
+  47          //-----------------------------------------------------------------------------
+  48          
+  49          //-----------------------------------------------------------------------------
+  50          // SiLabs_Startup() Routine
+C51 COMPILER V9.60.0.0   EFM8BB51_BLINKY                                                   07/12/2022 05:49:37 PAGE 2   
+
+  51          // ----------------------------------------------------------------------------
+  52          // This function is called immediately after reset, before the initialization
+  53          // code is run in SILABS_STARTUP.A51 (which runs before main() ). This is a
+  54          // useful place to disable the watchdog timer, which is enable by default
+  55          // and may trigger before main() in some instances.
+  56          //-----------------------------------------------------------------------------
+  57          void SiLabs_Startup (void)
+  58          {
+  59   1        // Disable the watchdog timer by writing 0xDE 0xAD in succession
+  60   1        WDTCN = 0xde;
+  61   1        WDTCN = 0xad;
+  62   1      }
+  63          
+  64          static void test_stdbsp_init(void) {
+  65   1        // UART0 P0.4 for TX, P0.5 for RX, baud set by T1 overflow
+  66   1        //   Baud rates up to SYSCLK/2 (transmit) or SYSCLK/8 (receive)
+  67   1        // BUTTON is P0.2 (low true)
+  68   1        // LED is P1.4 (high true)
+  69   1        SCON0 = SCON0_REN;  // enable UART0 receive
+  70   1        _nop_();
+  71   1      }
+  72          
+  73          static void test_stdbsp_step(void) {
+  74   1        _nop_();
+  75   1      }
+  76          
+  77          //-----------------------------------------------------------------------------
+  78          // main() Routine
+  79          // ----------------------------------------------------------------------------
+  80          int main (void)
+  81          {
+  82   1              // Enter default mode
+  83   1      
+  84   1              enter_DefaultMode_from_RESET();
+  85   1              test_stdbsp_init();
+  86   1      
+  87   1              while (1) {
+  88   2                  test_stdbsp_step();
+  89   2              }
+  90   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     28    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

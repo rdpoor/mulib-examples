@@ -1,0 +1,119 @@
+C51 COMPILER V9.60.0.0   MU_STDBSP                                                         07/12/2022 06:51:18 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MU_STDBSP
+OBJECT MODULE PLACED IN .\mu_platform\mu_stdbsp.OBJ
+COMPILER INVOKED BY: C:\SiliconLabs\SimplicityStudio\v5\developer\toolchains\keil_8051\9.60\BIN\C51.exe C:\Users\r\Proje
+                    -cts\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) WARNINGLEVEL(2) FLOATFUZZY
+                    -(3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\r\Projects\mulib-examples\test_stdbsp
+                    -\efm8bb51\EFM8BB51_Blinky2\inc;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.2.3//Device/shared/si8051Base;C
+                    -:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.2.3//Device/EFM8BB51/inc;C:\Users\r\Projects\mulib-examples\mu_
+                    -platform\common) PRINT(.\mu_platform\mu_stdbsp.lst) COND PAGEWIDTH(120) PAGELENGTH(65) PREPRINT(.\mu_platform\mu_stdbsp.
+                    -I) OBJECT(.\mu_platform\mu_stdbsp.OBJ)
+
+line level    source
+
+   1          /**
+   2           * MIT License
+   3           *
+   4           * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
+   5           *
+   6           * Permission is hereby granted, free of charge, to any person obtaining a copy
+   7           * of this software and associated documentation files (the "Software"), to deal
+   8           * in the Software without restriction, including without limitation the rights
+   9           * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  10           * copies of the Software, and to permit persons to whom the Software is
+  11           * furnished to do so, subject to the following conditions:
+  12           *
+  13           * The above copyright notice and this permission notice shall be included in
+  14           * all copies or substantial portions of the Software.
+  15           *
+  16           * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  17           * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  18           * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  19           * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  20           * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  21           * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  22           * SOFTWARE.
+  23           */
+  24          
+  25          // *****************************************************************************
+  26          // Includes
+  27          
+  28          #include "mu_stdbsp.h"
+  29          
+  30          #include "definitions.h"
+*** WARNING C318 IN LINE 30 OF C:\Users\r\Projects\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c: can't open file 'de
+             -finitions.h'
+  31          #include <stdbool.h>
+  32          
+  33          // *****************************************************************************
+  34          // Private types and definitions
+  35          
+  36          // *****************************************************************************
+  37          // Private (static) storage
+  38          
+  39          // *****************************************************************************
+  40          // Private (forward) declarations
+  41          
+  42          // *****************************************************************************
+  43          // Public code
+  44          
+  45          void mu_stdbsp_init(void) {
+  46   1        RTC_Timer32Start();
+*** WARNING C206 IN LINE 46 OF C:\Users\r\Projects\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c: 'RTC_Timer32Start':
+             - missing function-prototype
+C51 COMPILER V9.60.0.0   MU_STDBSP                                                         07/12/2022 06:51:18 PAGE 2   
+
+  47   1        mu_stdbsp_led_off();
+  48   1      }
+  49          
+  50          void mu_stdbsp_led_on(void) { LED_On(); }
+*** WARNING C206 IN LINE 50 OF C:\Users\r\Projects\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c: 'LED_On': missing f
+             -unction-prototype
+  51          
+  52          void mu_stdbsp_led_off(void) { LED_Off(); }
+*** WARNING C206 IN LINE 52 OF C:\Users\r\Projects\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c: 'LED_Off': missing 
+             -function-prototype
+  53          
+  54          void mu_stdbsp_led_toggle(void) { LED_Toggle(); }
+*** WARNING C206 IN LINE 54 OF C:\Users\r\Projects\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c: 'LED_Toggle': missi
+             -ng function-prototype
+  55          
+  56          bool mu_stdbsp_button_is_pressed(void) {
+  57   1        return SWITCH_Get() == SWITCH_STATE_PRESSED;
+*** WARNING C206 IN LINE 57 OF C:\Users\r\Projects\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c: 'SWITCH_Get': missi
+             -ng function-prototype
+*** ERROR C202 IN LINE 57 OF C:\Users\r\Projects\mulib-examples\mu_platform\efm32gg12\mu_stdbsp.c: 'SWITCH_STATE_PRESSED
+             -': undefined identifier
+  58   1      }
+  59          
+  60          bool mu_stdbsp_serial_tx_is_ready(void) {
+  61   1        return SERCOM2_USART_TransmitterIsReady();
+  62   1      }
+  63          
+  64          bool mu_stbsp_serial_tx_is_idle(void) {
+  65   1        return SERCOM2_USART_TransmitComplete();
+  66   1      }
+  67          
+  68          bool mu_stdbsp_serial_tx_byte(uint8_t ch) {
+  69   1        SERCOM2_USART_WriteByte(ch);
+  70   1        return true;
+  71   1      }
+  72          
+  73          bool mu_stdbsp_serial_rx_is_ready(void) {
+  74   1        return SERCOM2_USART_ReceiverIsReady();
+  75   1      }
+  76          
+  77          bool mu_stdbsp_serial_rx_byte(uint8_t *ch) {
+  78   1        while (!SERCOM2_USART_ReceiverIsReady()) {
+  79   2          asm("nop");
+  80   2        }
+  81   1        *ch = SERCOM2_USART_ReadByte();
+  82   1        return true;
+  83   1      }
+  84          
+  85          // *****************************************************************************
+  86          // Private (static) code
+
+C51 COMPILATION COMPLETE.  6 WARNING(S),  1 ERROR(S)

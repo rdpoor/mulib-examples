@@ -61,7 +61,11 @@ typedef enum { STATE_DEFINITIONS(EXPAND_STATES) } test_stdbsp_state_t;
 typedef struct {
   test_stdbsp_state_t state;
   uint32_t time_at;
+#ifdef __C51__
+  uint8_t prev_button;
+#else
   bool prev_button;
+#endif
 } test_stdbsp_ctx_t;
 
 // *****************************************************************************
@@ -242,6 +246,10 @@ static void print_uint32(uint32_t v) {
     v2 /= 10;
   }
 }
+
+#ifndef INT32_MAX
+#define INT32_MAX 0x7ffffff
+#endif
 
 static bool time_precedes(uint32_t t1, uint32_t t2) {
   return (t1 - t2) > INT32_MAX;

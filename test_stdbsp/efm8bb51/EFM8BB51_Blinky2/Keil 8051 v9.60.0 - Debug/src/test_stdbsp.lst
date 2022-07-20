@@ -1,0 +1,299 @@
+C51 COMPILER V9.60.0.0   TEST_STDBSP                                                       07/12/2022 06:51:18 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TEST_STDBSP
+OBJECT MODULE PLACED IN .\src\test_stdbsp.OBJ
+COMPILER INVOKED BY: C:\SiliconLabs\SimplicityStudio\v5\developer\toolchains\keil_8051\9.60\BIN\C51.exe C:\Users\r\Proje
+                    -cts\mulib-examples\test_stdbsp\common\test_stdbsp.c OMF2 SMALL DEBUG OBJECTEXTEND ROM(LARGE) WARNINGLEVEL(2) FLOATFUZZY(
+                    -3) OPTIMIZE(8,SPEED) DEFINE(DEBUG=1) INTVECTOR(0X0000) INTPROMOTE INCDIR(C:\Users\r\Projects\mulib-examples\test_stdbsp\
+                    -efm8bb51\EFM8BB51_Blinky2\inc;C:/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.2.3//Device/shared/si8051Base;C:
+                    -/SiliconLabs/SimplicityStudio/v5/developer/sdks/8051/v4.2.3//Device/EFM8BB51/inc;C:\Users\r\Projects\mulib-examples\mu_p
+                    -latform\common) PRINT(.\src\test_stdbsp.lst) COND PAGEWIDTH(120) PAGELENGTH(65) PREPRINT(.\src\test_stdbsp.I) OBJECT(.\s
+                    -rc\test_stdbsp.OBJ)
+
+line level    source
+
+   1          /**
+   2           * MIT License
+   3           *
+   4           * Copyright (c) 2021-2022 R. D. Poor <rdpoor@gmail.com>
+   5           *
+   6           * Permission is hereby granted, free of charge, to any person obtaining a copy
+   7           * of this software and associated documentation files (the "Software"), to deal
+   8           * in the Software without restriction, including without limitation the rights
+   9           * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  10           * copies of the Software, and to permit persons to whom the Software is
+  11           * furnished to do so, subject to the following conditions:
+  12           *
+  13           * The above copyright notice and this permission notice shall be included in
+  14           * all copies or substantial portions of the Software.
+  15           *
+  16           * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  17           * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  18           * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  19           * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  20           * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  21           * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  22           * SOFTWARE.
+  23           */
+  24          
+  25          /**
+  26          Implementation Notes:
+  27          
+  28          This app exercises all of the functions defined in mu_stdbsp.h.  In general
+  29          these functions cannot be tested using stubbing / mocking methods found in
+  30          unit testing.  Rather, they depend upon user interactions for verification.
+  31          */
+  32          
+  33          // *****************************************************************************
+  34          // Includes
+  35          
+  36          #include "test_stdbsp.h"
+  37          
+  38          #include "mu_stdbsp.h"
+  39          #include <stdbool.h>
+  40          #include <stddef.h>
+  41          #include <stdint.h>
+  42          
+  43          // *****************************************************************************
+  44          // Private types and definitions
+  45          
+  46          #define TICS_PER_SECOND 32768
+  47          
+  48          #define STATE_DEFINITIONS(M)                                                   \
+  49            M(TEST_STDBSP_STATE_INIT)                                                    \
+  50            M(TEST_STDBSP_STATE_LED_HELP)                                                \
+C51 COMPILER V9.60.0.0   TEST_STDBSP                                                       07/12/2022 06:51:18 PAGE 2   
+
+  51            M(TEST_STDBSP_STATE_LED_TEST)                                                \
+  52            M(TEST_STDBSP_STATE_BUTTON_HELP)                                             \
+  53            M(TEST_STDBSP_STATE_BUTTON_TEST)                                             \
+  54            M(TEST_STDBSP_STATE_TIME_HELP)                                               \
+  55            M(TEST_STDBSP_STATE_TIME_TEST)                                               \
+  56            M(TEST_STDBSP_STATE_ERR)
+  57          
+  58          #define EXPAND_STATES(_name) _name,
+  59          typedef enum { STATE_DEFINITIONS(EXPAND_STATES) } test_stdbsp_state_t;
+  60          
+  61          typedef struct {
+  62            test_stdbsp_state_t state;
+  63            uint32_t time_at;
+  64          #ifdef __C51__
+  65            uint8_t prev_button;
+  66          #else
+                bool prev_button;
+              #endif
+  69          } test_stdbsp_ctx_t;
+  70          
+  71          // *****************************************************************************
+  72          // Private (static) storage
+  73          
+  74          static test_stdbsp_ctx_t s_test_stdbsp_ctx;
+  75          
+  76          // *****************************************************************************
+  77          // Private (forward) declarations
+  78          
+  79          static void test_putstr(const char *str);
+  80          
+  81          static bool user_typed_space(void);
+  82          
+  83          static void print_uint32(uint32_t n);
+  84          
+  85          static bool time_precedes(uint32_t t1, uint32_t t2);
+  86          
+  87          static uint32_t time_offset(uint32_t t1, int32_t dt);
+  88          
+  89          // *****************************************************************************
+  90          // Public code
+  91          
+  92          void test_stdbsp_init(void) {
+  93   1        s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_INIT;
+  94   1        mu_stdbsp_init();
+  95   1      }
+  96          
+  97          void test_stdbsp_step(void) {
+  98   1        switch (s_test_stdbsp_ctx.state) {
+  99   2        case TEST_STDBSP_STATE_INIT: {
+ 100   3          test_putstr("\n##########"
+ 101   3                      "\ntest_stdbsp: exercise the mu_stdbsp API");
+ 102   3          s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_HELP;
+ 103   3        } break;
+ 104   2      
+ 105   2        case TEST_STDBSP_STATE_LED_HELP: {
+ 106   3          test_putstr("\nType 0 to turn off LED, 1 to turn on, 2 to toggle, "
+ 107   3                      "<space> to advance to next test.");
+ 108   3          s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_TEST;
+ 109   3        } break;
+ 110   2      
+ 111   2        case TEST_STDBSP_STATE_LED_TEST: {
+ 112   3          uint8_t ch;
+ 113   3          test_putstr("\ncmd: ");
+C51 COMPILER V9.60.0.0   TEST_STDBSP                                                       07/12/2022 06:51:18 PAGE 3   
+
+ 114   3          if (!mu_stdbsp_serial_rx_byte(&ch)) {
+ 115   4            test_putstr("\nmu_stdbsp_serial_rx_byte() failed -- quitting");
+ 116   4            s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_ERR;
+ 117   4          } else {
+ 118   4            mu_stdbsp_serial_tx_byte(ch); // echo char
+ 119   4            switch (ch) {
+ 120   5            case '0': {
+ 121   6              mu_stdbsp_led_off();
+ 122   6            } break;
+ 123   5            case '1': {
+ 124   6              mu_stdbsp_led_on();
+ 125   6            } break;
+ 126   5            case '2': {
+ 127   6              mu_stdbsp_led_toggle();
+ 128   6            } break;
+ 129   5            case ' ': {
+ 130   6              s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_HELP;
+ 131   6            } break;
+ 132   5            default: {
+ 133   6              test_putstr("\nUnrecognized command '");
+ 134   6              mu_stdbsp_serial_tx_byte(ch);
+ 135   6              test_putstr("'");
+ 136   6              s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_LED_HELP;
+ 137   6            }
+ 138   5            }
+ 139   4          }
+ 140   3        } break;
+ 141   2      
+ 142   2        case TEST_STDBSP_STATE_BUTTON_HELP: {
+ 143   3          test_putstr("\nPress button to turn on LED, release button to turn off, "
+ 144   3                      "<space> to advance to next test: ");
+ 145   3          s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_BUTTON_TEST;
+ 146   3          s_test_stdbsp_ctx.prev_button = false;
+ 147   3        } break;
+ 148   2      
+ 149   2        case TEST_STDBSP_STATE_BUTTON_TEST: {
+ 150   3          if (user_typed_space()) {
+ 151   4            s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_TIME_HELP;
+ 152   4          } else {
+ 153   4            bool curr_button = mu_stdbsp_button_is_pressed();
+ 154   4            if (curr_button != s_test_stdbsp_ctx.prev_button) {
+ 155   5              if (curr_button) {
+ 156   6                test_putstr("\nButton pressed");
+ 157   6                mu_stdbsp_led_on();
+ 158   6              } else {
+ 159   6                test_putstr("\nButton released");
+ 160   6                mu_stdbsp_led_off();
+ 161   6              }
+ 162   5              s_test_stdbsp_ctx.prev_button = curr_button;
+ 163   5            }
+ 164   4          }
+ 165   3        } break;
+ 166   2      
+ 167   2        case TEST_STDBSP_STATE_TIME_HELP: {
+ 168   3          test_putstr("\nWatch for messages once per second.  "
+ 169   3                      "Type <space> to quit: ");
+ 170   3          s_test_stdbsp_ctx.time_at = time_offset(mu_stdbsp_now(), TICS_PER_SECOND);
+ 171   3          s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_TIME_TEST;
+ 172   3        } break;
+ 173   2      
+ 174   2        case TEST_STDBSP_STATE_TIME_TEST: {
+ 175   3          uint32_t now = mu_stdbsp_now();
+ 176   3          if (user_typed_space()) {
+C51 COMPILER V9.60.0.0   TEST_STDBSP                                                       07/12/2022 06:51:18 PAGE 4   
+
+ 177   4            s_test_stdbsp_ctx.state = TEST_STDBSP_STATE_INIT;
+ 178   4          } else if (!time_precedes(now, s_test_stdbsp_ctx.time_at)) {
+ 179   4            // time has elapsed...
+ 180   4            mu_stdbsp_led_toggle();
+ 181   4            mu_stdbsp_serial_tx_byte('\n');
+ 182   4            print_uint32(now);
+ 183   4            s_test_stdbsp_ctx.time_at =
+ 184   4                time_offset(s_test_stdbsp_ctx.time_at, TICS_PER_SECOND);
+ 185   4            // remain in this state...
+ 186   4          }
+ 187   3        } break;
+ 188   2      
+ 189   2        case TEST_STDBSP_STATE_ERR: {
+ 190   3          // should not normally arrive here.
+ 191   3        } break;
+ 192   2      
+ 193   2        } // switch
+ 194   1      }
+ 195          
+ 196          // *****************************************************************************
+ 197          // Private (static) code
+ 198          
+ 199          static void test_putstr(const char *str) {
+ 200   1        while (*str) {
+ 201   2          mu_stdbsp_serial_tx_byte((uint8_t)*str++);
+ 202   2        }
+ 203   1      }
+ 204          
+ 205          static bool user_typed_space(void) {
+ 206   1        uint8_t ch;
+ 207   1      
+ 208   1        if (!mu_stdbsp_serial_rx_is_ready()) {
+ 209   2          // no key typed: return false
+ 210   2          return false;
+ 211   2      
+ 212   2        } else if (!mu_stdbsp_serial_rx_byte(&ch)) {
+ 213   2          // some rx error: return false
+ 214   2          return false;
+ 215   2      
+ 216   2        } else if (ch != ' ') {
+ 217   2          // char typed, but not a space
+ 218   2          return false;
+ 219   2      
+ 220   2        } else {
+ 221   2          // space was typed.
+ 222   2          return true;
+ 223   2        }
+ 224   1      }
+ 225          
+ 226          static void print_uint32(uint32_t v) {
+ 227   1        uint8_t n_digits = 0;
+ 228   1        uint32_t v2 = 0;
+ 229   1        // Reverse the decimal digits in v into v2.  If v == 007890, then v2 == 0987
+ 230   1        // and n_digits = 4.
+ 231   1      
+ 232   1        if (v == 0) {
+ 233   2          // Handle the special case where v == 0
+ 234   2          n_digits = 1;
+ 235   2        }
+ 236   1      
+ 237   1        while (v != 0) {
+ 238   2          v2 *= 10;
+ 239   2          v2 += v % 10;
+C51 COMPILER V9.60.0.0   TEST_STDBSP                                                       07/12/2022 06:51:18 PAGE 5   
+
+ 240   2          v /= 10;
+ 241   2          n_digits += 1;
+ 242   2        }
+ 243   1        // Now v2 has reversed digits.  Print n_digits.
+ 244   1        while (n_digits-- != 0) {
+ 245   2          mu_stdbsp_serial_tx_byte(v2 % 10 + '0');
+ 246   2          v2 /= 10;
+ 247   2        }
+ 248   1      }
+ 249          
+ 250          #ifndef INT32_MAX
+ 251          #define INT32_MAX 0x7ffffff
+ 252          #endif
+ 253          
+ 254          static bool time_precedes(uint32_t t1, uint32_t t2) {
+ 255   1        return (t1 - t2) > INT32_MAX;
+ 256   1      }
+ 257          
+ 258          static uint32_t time_offset(uint32_t t1, int32_t dt) { return t1 + dt; }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    719    ----
+   CONSTANT SIZE    =    403    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6      33
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       1
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
