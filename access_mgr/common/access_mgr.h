@@ -23,13 +23,13 @@
  */
 
 /**
- * @file tutorial.h
+ * @file access_mgr.h
  *
- * @brief Header for tutorial applications
+ * @brief Demonstration of managing exclusive access to a resource.
  */
 
-#ifndef _TUTORIAL_H_
-#define _TUTORIAL_H_
+#ifndef _ACCESS_MGR_H_
+#define _ACCESS_MGR_H_
 
 // *****************************************************************************
 // Includes
@@ -50,12 +50,12 @@ extern "C" {
 /**
  * @brief Initialize the tutorial application.  Called once at startup.
  */
-void tutorial_init(void);
+void access_mgr_init(void);
 
 /**
  * @brief Run the tutorial application.  Called frequently from main().
  */
-void tutorial_step(void);
+void access_mgr_step(void);
 
 // *****************************************************************************
 // End of file
@@ -64,4 +64,4 @@ void tutorial_step(void);
 }
 #endif
 
-#endif /* #ifndef _TUTORIAL_H_ */
+#endif /* #ifndef _ACCESS_MGR_H_ */

@@ -25,14 +25,10 @@
 // *****************************************************************************
 // Includes
 
-#include "tutorial.h"
+#include "access_mgr.h"
 
-#include "mu_access_mgr.h"
-#include "mu_periodic.h"
-#include "mu_sched.h"
-#include "mu_task.h"
-#include "mu_time.h"
-#include "tutorials_bsp.h" // define led_off(), led_toggle()
+#include "mu_stdbsp.h"
+#include "mulib.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -41,7 +37,7 @@
 // *****************************************************************************
 // Private types and definitions
 
-#define TUTORIAL_INTERVAL_MS 5000
+#define ACCESS_MGR_INTERVAL_MS 5000
 #define RESERVE_MS 1000
 
 #define MAX_PENDING_TASKS 2
@@ -89,35 +85,44 @@ static mu_task_t *requestor_init(requestor_ctx_t *requestor, const char *name);
  */
 static void requestor_fn(void *ctx, void *arg);
 
+/**
+ * @brief Write a string of characters on serial output.
+ */
+static void access_mgr_puts(const char *str);
+
 // *****************************************************************************
 // Public code
 
-void tutorial_init(void) {
+void access_mgr_init(void) {
   // Called once at startup.
+  mu_sched_init();  // initialize the scheduler
+  mu_stdbsp_init(); // perform platform-specific initializations
 
-  mu_sched_init();      // initialize the scheduler
-  mu_time_init();       // perform platform-specific initializations
-  tutorials_bsp_init(); // platform-specific initialization for tutorials
-
-  tutorials_bsp_puts("\n# ==================================");
+  access_mgr_puts("\n# =================================="
+                  "\nType any character to reserve stdout.  If the periodic "
+                  "task has reserved"
+                  "\nstdout, access will be granted as soon as the periodic "
+                  "task releases it."
+                  "\nOtherwise, access will be granted immediately.");
 
   mu_access_mgr_init(&s_access_mgr, s_pending_tasks, MAX_PENDING_TASKS);
 
   // Initialize and start the periodic timer.  It will invoke the
-  // periodic requestor once every TUTORIAL_INTERVAL_MS milliseconds.
+  // periodic requestor once every ACCESS_MGR_INTERVAL_MS milliseconds.
   mu_periodic_start(mu_periodic_init(&s_timer),
-                    mu_time_ms_to_rel(TUTORIAL_INTERVAL_MS),
-                    requestor_init(&s_periodic_requestor_ctx, "Periodic"));
+                    mu_time_ms_to_rel(ACCESS_MGR_INTERVAL_MS),
+                    requestor_init(&s_periodic_requestor_ctx, "Periodic Task"));
 }
 
-void tutorial_step(void) {
-  // Called frequently from the main() loop.  Poll tutorials_bsp_kbhit() to see
-  // if the user has typed any key.  If so, start a task that requests access
-  // to stdout.  Regardless, always run the scheduler.
+void access_mgr_step(void) {
+  // Called frequently from the main() loop.  Poll to see if the user has typed
+  // any key.  If so, start a task that requests access to stdout.  Regardless,
+  // always run the scheduler.
 
-  if (tutorials_bsp_kbhit()) {
-     tutorials_bsp_getch(); // consume the character just typed.
-     mu_sched_now(requestor_init(&s_async_requestor_ctx, "Async"));
+  if (mu_stdbsp_serial_rx_is_ready()) {
+    uint8_t ch;
+    mu_stdbsp_serial_rx_byte(&ch); // consume the character just typed.
+    mu_sched_now(requestor_init(&s_async_requestor_ctx, "User Task"));
   }
   mu_sched_step();
 }
@@ -130,7 +135,7 @@ static mu_task_t *requestor_init(requestor_ctx_t *requestor, const char *name) {
   requestor->state = REQUESTOR_STATE_IDLE;
 
   if (requestor == &s_async_requestor_ctx) {
-      tutorials_bsp_led_toggle();
+    mu_stdbsp_led_toggle();
   }
 
   return mu_task_init(&requestor->task, requestor_fn, requestor, name);
@@ -140,39 +145,45 @@ static void requestor_fn(void *ctx, void *arg) {
   requestor_ctx_t *self = (requestor_ctx_t *)ctx;
   (void)arg;
 
-  // printf("\n%9ld: %s state %d", mu_time_now(), self->name, self->state);
   switch (self->state) {
   case REQUESTOR_STATE_IDLE: {
     // Here when the task first starts. Request access to standard output.
     // NOTE: set desired state before calling mu_access_mgr_request_ownership()
     // since mu_access_mgr_request_ownership() may call back immediately.
     self->state = REQUESTOR_STATE_AWAIT_STDOUT;
-    if (mu_access_mgr_request_ownership(&s_access_mgr, &self->task) != MU_ACCESS_MGR_ERR_NONE) {
+    if (mu_access_mgr_request_ownership(&s_access_mgr, &self->task) !=
+        MU_ACCESS_MGR_ERR_NONE) {
       // was unable to request ownership, most likely already requested
-      tutorials_bsp_puts("\n");
-      tutorials_bsp_puts(self->name);
-      tutorials_bsp_puts(" is already reserving stdout");
+      access_mgr_puts("\n");
+      access_mgr_puts(self->name);
+      access_mgr_puts(" is already reserving stdout");
       // remain in REQUESTOR_STATE_IDLE
     }
   } break;
 
   case REQUESTOR_STATE_AWAIT_STDOUT: {
     // Here when access_mgr has granted access to stdout.  Print the first
-    // half of a message, and wait for a random interval.
-    tutorials_bsp_puts("\n");
-    tutorials_bsp_puts(self->name);
-    tutorials_bsp_puts(" reserving stdout...");
+    // half of a message, and wait for one second.
+    access_mgr_puts("\n");
+    access_mgr_puts(self->name);
+    access_mgr_puts(" reserving stdout...");
     self->state = REQUESTOR_STATE_HOLDING;
     // the scheduler will invoke this task when the interval has elapsed.
     mu_sched_in(&self->task, mu_time_ms_to_rel(RESERVE_MS));
   } break;
 
-  case REQUESTOR_STATE_HOLDING: { // Here when the RESERVE_MS has expired.
-                                  // Print the second half of
+  case REQUESTOR_STATE_HOLDING: {
+    // Here when the RESERVE_MS has expired. Print the second half of
     // a message before relinquishing exclusive access to stdout.
-    tutorials_bsp_puts("releasing stdout.");
+    access_mgr_puts("releasing stdout.");
     mu_access_mgr_release_ownership(&s_access_mgr, &self->task);
     self->state = REQUESTOR_STATE_IDLE;
   } break;
+  }
+}
+
+static void access_mgr_puts(const char *str) {
+  while (*str) {
+    mu_stdbsp_serial_tx_byte((uint8_t)*str++);
   }
 }
