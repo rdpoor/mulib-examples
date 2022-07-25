@@ -29,6 +29,7 @@
 
 #include "definitions.h"
 #include <stdbool.h>
+#include "stdint.h"
 
 // *****************************************************************************
 // Private types and definitions

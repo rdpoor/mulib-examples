@@ -34,7 +34,7 @@ extern "C" {
 
 #include "disk.h"
 
-#include "mu_task.h"
+#include "mulib.h"
 
 #include <stdbool.h>
 #include <stdint.h>

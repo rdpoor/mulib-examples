@@ -65,10 +65,9 @@ Therfore, the screen will be 47 * 10 = 470 pixels.
 #include "animator.h"
 #include "ansi_term.h"
 #include "disk.h"
-#include "mu_sched.h"
-#include "mu_task.h"
+#include "mulib.h"
+#include "mu_stdbsp.h"
 #include "pole.h"
-#include "examples_bsp.h"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -149,17 +148,19 @@ static void reset(void);
  */
 static void redraw_screen(void);
 
+/**
+ * @brief If any characters present on serial input, slurp them ane return true.
+ */
+static bool character_was_typed(void);
+
 // *****************************************************************************
 // Public code
 
-void EXAMPLE_Initialize(void) { tower_init(); }
-
-void EXAMPLE_Tasks(void) { tower_step(); }
-
 void tower_init(void) {
   mu_sched_init();
-  mu_time_init();
-  ansi_term_init(examples_bsp_putch);
+  mu_stdbsp_init();
+  // mu_stdbsp_serial_tx_byte takes uint8_t, ansi_term_init takes char: Re-cast
+  ansi_term_init((ansi_term_putc_fn)mu_stdbsp_serial_tx_byte);
   mu_task_init(&s_tower_task, tower_task_fn, &s_tower_ctx, "Tower");
 
   s_tower_ctx.phase = PHASE_INIT;
@@ -182,7 +183,7 @@ void tower_draw_y(int y) {
     for (int i=0; i<N_POLES && ch == ' '; i++) {
       ch = pole_char_at(&s_poles[i], x, y);
     }
-    examples_bsp_putch(ch);
+    mu_stdbsp_serial_tx_byte(ch);
   }
 }
 
@@ -192,13 +193,15 @@ void tower_draw_y(int y) {
 static void tower_task_fn(void *ctx, void *arg) {
   tower_ctx_t *self = (tower_ctx_t *)ctx;
   (void)arg;
-  bool running;
+  bool running = false;
 
-  if (self->phase == PHASE_INIT) {
+  // If any character is typed, restart the process.  This is expecially useful
+  // if the screen needs to be redrawn.
+  if (character_was_typed() || (self->phase == PHASE_INIT)) {
       reset();
       self->phase = PHASE_A;
   }
-  
+
   // move_disk() will start the animator task, which will progressively move one
   // disk from one pole to another.  When it completes, it will call back to
   // this task.  If there are no more moves (running == false), this task will
@@ -222,8 +225,8 @@ static void tower_task_fn(void *ctx, void *arg) {
 
   if (!running) {
     // Algo completed.  Delay briefly before restarting the process.
-    mu_sched_in(&s_tower_task, MU_TIME_MS_TO_REL(5000));
-    self->phase = PHASE_INIT;  
+    mu_sched_in(&s_tower_task, mu_time_ms_to_rel(5000));
+    self->phase = PHASE_INIT;
   }
 }
 
@@ -305,3 +308,12 @@ static void redraw_screen(void) {
   }
 }
 
+static bool character_was_typed(void) {
+  bool any_typed = false;
+  while (mu_stdbsp_serial_rx_is_ready()) {
+    uint8_t ch;;
+    mu_stdbsp_serial_rx_byte(&ch);
+    any_typed = true;
+  }
+  return any_typed;
+}

@@ -27,9 +27,8 @@
 
 #include "animator.h"
 
+#include "mulib.h"
 #include "tower.h"
-#include "mu_sched.h"
-#include "mu_task.h"
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -37,7 +36,7 @@
 // *****************************************************************************
 // Local types and definitions
 
-#define REDRAW_DELAY_MS MU_TIME_MS_TO_REL(20)
+#define REDRAW_DELAY_MS mu_time_ms_to_rel(20)
 
 typedef enum {
   MOVING_UP,

@@ -53,10 +53,6 @@ extern "C" {
 // *****************************************************************************
 // declarations
 
-void EXAMPLE_Initialize(void);
-
-void EXAMPLE_Tasks(void);
-
 void tower_init(void);
 
 void tower_step(void);
