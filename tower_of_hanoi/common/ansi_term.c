@@ -61,8 +61,6 @@ static void ansi_puts(const char *s);
 
 static void ansi_putc(char ch);
 
-static void default_putc(char ch);
-
 /**
  * @brief ANSI_TERM_ESC<x>;<y><suffix>
  */
@@ -75,9 +73,8 @@ static uint8_t map_bg_color(ansi_term_color_t color);
 // Public code
 
 void ansi_term_init(ansi_term_putc_fn fn) {
-  s_putc_fn = (fn == NULL) ? default_putc : fn;
+  s_putc_fn = fn;
   ansi_term_set_colors(ANSI_TERM_DEFAULT_COLOR, ANSI_TERM_DEFAULT_COLOR);
-
 }
 
 void ansi_term_reset() {
@@ -188,8 +185,4 @@ static void ansi_puts(const char *s) {
 
 static void ansi_putc(char ch) {
   s_putc_fn(ch);
-}
-
-static void default_putc(char ch) {
-  fputc(ch, stdout);
 }

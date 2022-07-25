@@ -50,12 +50,12 @@ extern "C" {
 /**
  * @brief Initialize the tutorial application.  Called once at startup.
  */
-void tutorial_init(void);
+void blink_1_init(void);
 
 /**
  * @brief Run the tutorial application.  Called frequently from main().
  */
-void tutorial_step(void);
+void blink_1_step(void);
 
 // *****************************************************************************
 // End of file
