@@ -40,13 +40,11 @@
 // *****************************************************************************
 // Includes
 
-#include "tutorial.h"
+#include "blink_4.h"
 
 #include "morse_msg.h"     // define morse_msg_*
-#include "mu_sched.h"      // define mu_sched_*
-#include "mu_task.h"       // define mu_task_*
-#include "mu_time.h"       // define mu_time_*
-#include "tutorials_bsp.h" // define led_off(), led_toggle()
+#include "mu_stdbsp.h"
+#include "mulib.h"
 #include <stddef.h>        // define NULL
 
 // *****************************************************************************
@@ -75,10 +73,9 @@ static void blink_4_fn(void *ctx, void *arg);
 // *****************************************************************************
 // Public code
 
-void tutorial_init(void) {
+void blink_4_init(void) {
   mu_sched_init();      // initialize the scheduler
-  mu_time_init();       // perform platform-specific initializations
-  tutorials_bsp_init(); // initialization for tutorial support
+  mu_stdbsp_init();     // perform platform-specific initializations
 
   // initialize s_blink_4_task to associate its function (blink_4_fn) with
   // its context (s_blink_4_ctx)
@@ -89,7 +86,7 @@ void tutorial_init(void) {
   mu_task_call(&s_blink_4_task, NULL);
 }
 
-void tutorial_step(void) {
+void blink_4_step(void) {
   // This function is called repeatedly.  It only needs to call mu_sched_step()
   // to keep things running.
   mu_sched_step();
@@ -104,7 +101,7 @@ static void blink_4_fn(void *ctx, void *arg) {
 
   // Schedule sub-task to blink the ascii and upon completion, call this task.
   // Note a few things:
-  // * morse_msg_init() returns a (pointer to a) task which can be called
+  // * morse_msg_init() returns a reference to a task which can be called
   //   directly.
   // * morse_msg_init() takes an on_completion argument, which is a task to
   //   be called when the morse msg task completes.  In this case, the

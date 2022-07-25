@@ -27,10 +27,7 @@
 
 #include "morse_msg.h"
 
-#include "mu_sched.h"      // define mu_sched_*
-#include "mu_task.h"       // define mu_task_*
-#include "mu_time.h"       // define mu_time_*
-#include "tutorials_bsp.h" // define led_off(), led_toggle()
+#include "mulib.h"
 
 // =============================================================================
 // Local types and definitions
@@ -78,7 +75,7 @@ static void morse_msg_fn(void *ctx, void *arg) {
     // Completed the message.   Call the on_completion task (if provided) after
     // a one second delay.
     if (self->on_completion != NULL) {
-      mu_sched_in(self->on_completion, MU_TIME_MS_TO_REL(1000));
+      mu_sched_in(self->on_completion, mu_time_ms_to_rel(1000));
     }
   }
 }
