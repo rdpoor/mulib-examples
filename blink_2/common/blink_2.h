@@ -23,13 +23,13 @@
  */
 
 /**
- * @file tutorial.h
+ * @file blink_2.h
  *
- * @brief Header for tutorial applications
+ * @brief Header for blink_2 applications
  */
 
-#ifndef _TUTORIAL_H_
-#define _TUTORIAL_H_
+#ifndef _BLINK_2_H_
+#define _BLINK_2_H_
 
 // *****************************************************************************
 // Includes
@@ -48,14 +48,14 @@ extern "C" {
 // Public declarations
 
 /**
- * @brief Initialize the tutorial application.  Called once at startup.
+ * @brief Initialize the blink_2 application.  Called once at startup.
  */
-void tutorial_init(void);
+void blink_2_init(void);
 
 /**
- * @brief Run the tutorial application.  Called frequently from main().
+ * @brief Run the blink_2 application.  Called frequently from main().
  */
-void tutorial_step(void);
+void blink_2_step(void);
 
 // *****************************************************************************
 // End of file
@@ -64,4 +64,4 @@ void tutorial_step(void);
 }
 #endif
 
-#endif /* #ifndef _TUTORIAL_H_ */
+#endif /* #ifndef _BLINK_2_H_ */

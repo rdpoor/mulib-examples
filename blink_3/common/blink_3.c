@@ -38,12 +38,11 @@
 // *****************************************************************************
 // Includes
 
-#include "tutorial.h"
+#include "blink_3.h"
 
-#include "morse_blinker.h" // define morse_blinker_*
-#include "mu_sched.h"      // define mu_sched_*
-#include "mu_task.h"       // define mu_task_*
-#include "tutorials_bsp.h" // define led_off(), led_toggle()
+#include "morse_blinker.h"
+#include "mu_stdbsp.h"
+#include "mulib.h"
 #include <stddef.h>        // define NULL
 
 // *****************************************************************************
@@ -70,10 +69,9 @@ static void blink_3_fn(void *ctx, void *arg);
 // *****************************************************************************
 // Public code
 
-void tutorial_init(void) {
+void blink_3_init(void) {
   mu_sched_init();      // initialize the scheduler
-  mu_time_init();       // perform platform-specific initializations
-  tutorials_bsp_init(); // initialization for tutorial support
+  mu_stdbsp_init();     // perform platform-specific initializations
 
   // initialize s_blink_3_task to associate its function (blink_3_fn) with
   // its context (s_blink_3_ctx)
@@ -84,7 +82,7 @@ void tutorial_init(void) {
   mu_task_call(&s_blink_3_task, NULL);
 }
 
-void tutorial_step(void) {
+void blink_3_step(void) {
   // This function is called repeatedly.  It only needs to call mu_sched_step()
   // to keep things running.
   mu_sched_step();
@@ -99,11 +97,11 @@ static void blink_3_fn(void *ctx, void *arg) {
 
   // Schedule sub-task to blink the ascii and upon completion, call this task.
   // Note a few things:
-  // * morse_blinker_init() returns a (pointer to a) task which can be called
+  // * morse_blinker_init() returns a reference to a task which can be called
   //   directly.
   // * morse_blinker_init() takes an on_completion argument, which is a task to
   //   be called when the morse blinker task completes.  In this case, the
-  //   on_completion argument is the blink_3 task (i.e. this function), so the
+  //   on_completion argument is the blink_3 task (i.e. this task), so the
   //   process repeats indefinitely.
   mu_task_call(morse_blinker_init(&s_blink_3_ctx.morse_blinker,
                                   'X',

@@ -333,7 +333,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value="../src;../src/config/samd11_xpro;../src/packs/ATSAMD11D14AM_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\..\..\..\mu_platform\common;..\..\..\..\mu_platform\samd11_xpro;..\..\..\common;..\..\..\..\mulib\mulib"/>
+                  value="../src;../src/config/samd11_xpro;../src/packs/ATSAMD11D14AM_DFP;../src/packs/CMSIS/;../src/packs/CMSIS/CMSIS/Core/Include;..\..\..\..\mu_platform\common;..\..\..\..\mu_platform\samd11_xpro;..\..\..\..\mulib\mulib;..\..\..\common"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>

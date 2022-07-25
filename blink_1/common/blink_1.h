@@ -28,8 +28,8 @@
  * @brief Header for tutorial applications
  */
 
-#ifndef _TUTORIAL_H_
-#define _TUTORIAL_H_
+#ifndef _BLINK_1_H_
+#define _BLINK_1_H_
 
 // *****************************************************************************
 // Includes
@@ -64,4 +64,4 @@ void blink_1_step(void);
 }
 #endif
 
-#endif /* #ifndef _TUTORIAL_H_ */
+#endif /* #ifndef _BLINK_1_H_ */

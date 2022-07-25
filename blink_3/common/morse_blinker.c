@@ -27,16 +27,14 @@
 
 #include "morse_blinker.h"
 
-#include "mu_sched.h"      // define mu_sched_*
-#include "mu_task.h"       // define mu_task_*
-#include "mu_time.h"       // define mu_time_*
-#include "tutorials_bsp.h" // define led_off(), led_toggle()
+#include "mulib.h"
+#include "mu_stdbsp.h"
 
 // =============================================================================
 // Local types and definitions
 
 // Define Morse timing constants
-#define MORSE_CHAR_QUANTUM MU_TIME_MS_TO_REL(200)
+#define MORSE_CHAR_QUANTUM mu_time_ms_to_rel(200)
 #define MORSE_SHORT_MARK (1 * MORSE_CHAR_QUANTUM)
 #define MORSE_LONG_MARK (3 * MORSE_CHAR_QUANTUM)
 #define MORSE_INTRA_CHAR_GAP (1 * MORSE_CHAR_QUANTUM)
@@ -146,7 +144,7 @@ mu_task_t *morse_blinker_init(morse_blinker_t *blinker,
   blinker->on_completion = on_completion;
 
   // Make sure the LED is initially off
-  tutorials_bsp_led_off();
+  mu_stdbsp_led_off();
 
   // Return the task object, ready to be called or passed to scheduler.
   return &blinker->task;
@@ -161,24 +159,24 @@ static void morse_blinker_fn(void *ctx, void *arg) {
 
   switch(*self->seq++) {
     case '.':  // dot: turn LED on for MORSE_SHORT_MARK
-    tutorials_bsp_led_on();
+    mu_stdbsp_led_on();
     mu_sched_in(&self->task, MORSE_SHORT_MARK);
     break;
 
     case '-':  // dash: turn LED on for MORSE_LONG_MARK
-    tutorials_bsp_led_on();
+    mu_stdbsp_led_on();
     mu_sched_in(&self->task, MORSE_LONG_MARK);
     break;
 
     case ' ':  // intra-character: turn LED off for MORSE_INTRA_CHAR_GAP
-    tutorials_bsp_led_off();
+    mu_stdbsp_led_off();
     mu_sched_in(&self->task, MORSE_INTRA_CHAR_GAP);
     break;
 
     case '\0':
     // Arrive here when the character has been emitted: turn the LED off and
     // call the on_completion task after MORSE_INTER_CHAR_GAP
-    tutorials_bsp_led_off();
+    mu_stdbsp_led_off();
     if (self->on_completion != NULL) {
       mu_sched_in(self->on_completion, MORSE_INTER_CHAR_GAP);
     }

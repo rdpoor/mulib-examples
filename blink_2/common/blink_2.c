@@ -38,13 +38,10 @@
 // *****************************************************************************
 // Includes
 
-#include "tutorial.h"
+#include "blink_2.h"
 
-#include "mu_periodic.h"  // define mu_periodic_*
-#include "mu_sched.h"      // define mu_sched_*
-#include "mu_task.h"       // define mu_task_*
-#include "mu_time.h"       // define mu_time_*
-#include "tutorials_bsp.h" // define led_off(), led_toggle()
+#include "mulib.h"
+#include "mu_stdbsp.h"
 
 // *****************************************************************************
 // Private types and definitions
@@ -74,17 +71,16 @@ static void blink_2_fn(void *ctx, void *arg);
 // *****************************************************************************
 // Public code
 
-void tutorial_init(void) {
+void blink_2_init(void) {
   mu_sched_init();      // initialize the scheduler
-  mu_time_init();       // perform platform-specific initializations
-  tutorials_bsp_init(); // initialization for tutorial support
+  mu_stdbsp_init();       // perform platform-specific initializations
 
   // initialize s_blink_2_task to associate its function (blink_2_fn) with
   // its context (s_blink_2_ctx)
   mu_task_init(&s_blink_2_task, blink_2_fn, &s_blink_2_ctx, "Blink 2");
 
   // Make sure the LED is initially off
-  tutorials_bsp_led_off();
+  mu_stdbsp_led_off();
 
   // Initialize and start the periodic timer
   mu_periodic_init(&s_blink_2_ctx.timer);
@@ -94,7 +90,7 @@ void tutorial_init(void) {
 }
 
 
-void tutorial_step(void) {
+void blink_2_step(void) {
   // This function is called repeatedly.  It only needs to call mu_sched_step()
   // to keep things running.
   mu_sched_step();
@@ -114,5 +110,5 @@ static void blink_2_fn(void *ctx, void *arg) {
   (void)arg;   // unused
 
   // Toggle the LED
-  tutorials_bsp_led_toggle();
+  mu_stdbsp_led_toggle();
 }
